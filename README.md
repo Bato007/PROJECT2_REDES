@@ -5,9 +5,7 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 ## Protocol
 
 
-### Client to Server
-
-1. Create Room
+### **1. Create Room**
 
 #### Client request
 ```
@@ -26,7 +24,7 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 }
 ```
 
-2. Join a Room
+### **2. Join Room**
 
 #### Client request
 ```
@@ -45,7 +43,7 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 }
 ```
 
-3. Exit Room
+### **3. Exit Room**
 
 #### Client request
 ```
@@ -63,7 +61,7 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 }
 ```
 
-4. Start Game
+### **4. Start Game**
 
 #### Client request
 ```
