@@ -2,8 +2,18 @@
 This is a small project that replicates the game [Exploding Kittens](https://www.explodingkittens.com/products/exploding-kittens-original-edition), but
 this version doesn't support the *Nope* card. This supports multiple users and multiple tables. 
 
-## Protocol
+## Models
 
+### Card model
+```
+{
+  type: "card",
+  action: "draw",
+  scr: "http://link.com",
+}
+```
+
+## Protocol
 
 ### **1. Create Room**
 
@@ -39,7 +49,8 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 #### Server response
 ```
 {
-  code: 200
+  code: 200,
+  users: ['user1', 'user2', 'user3']
 }
 ```
 
