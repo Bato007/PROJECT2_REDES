@@ -4,7 +4,7 @@ from time import sleep
 from threading import Thread, Event
 
 HOST = sk.gethostname()   # The server's hostname
-PORT = 8080               # The port used by the server
+PORT = 8081               # The port used by the server
 BUFFER_SIZE = 1024
 
 sessions = []
