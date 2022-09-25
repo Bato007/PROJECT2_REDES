@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+
 import Card from './Card'
 import './deck.scss'
 
@@ -32,6 +33,7 @@ import card26 from '../../../assets/cards/26.jpeg'
 import stackedDeck from '../../../assets/stacked-deck.png'
 
 import shuffle from '../../Utils/shuffle'
+import Button from '../button/Button'
 
 const CARDS = [
   {
@@ -199,43 +201,52 @@ const Deck = ({ isStacked, addCardToPlayer }) => {
     const tempDeck = []
     CARDS.map((card) => {
       for (let i = 0; i < card.quant; i += 1) {
-        tempDeck.push(card)
+        tempDeck.push({
+          ...card,
+          index: tempDeck.length,
+        })
       }
       return tempDeck
     })
-    // eslint-disable-next-line no-console
-    console.log(tempDeck.length)
     // Double shuffle since cards are ordered
-    setDeck(shuffle(shuffle(tempDeck)))
+    setDeck(shuffle(shuffle([...tempDeck])))
   }, [])
 
   const onCardReveal = () => {
     const lastCard = deck.pop()
     addCardToPlayer(lastCard)
-    // eslint-disable-next-line no-console
-    console.log('NEW ARRAY LENGHT', deck.length)
+  }
+
+  const moveCard = (dragCard, dropCard) => {
+    const dragCardIndex = deck.findIndex((card) => card.index === dragCard.index)
+    const dropCardIndex = deck.findIndex((card) => card.index === dropCard.index)
+
+    const tempCard = deck[dragCardIndex]
+    deck[dragCardIndex] = deck[dropCardIndex]
+    deck[dropCardIndex] = tempCard
+
+    setDeck([...deck])
   }
 
   return (
     <div className={`${isStacked ? 'deck-stacked' : 'deck-show-all'}`}>
       {
-        isStacked
-          ? (
-            <Card
-              card={{
-                src: stackedDeck,
-              }}
-              onClick={onCardReveal}
-            />
-          )
-          : deck.map((item, index) => (
-            <Card
-            // eslint-disable-next-line react/no-array-index-key
-              key={`${item.name}${index}`}
-              card={item}
-            />
-          ))
-      }
+      isStacked
+        ? (
+          <Button
+            icon={[stackedDeck]}
+            classButton="card"
+            onClick={onCardReveal}
+          />
+        )
+        : deck.map((item) => (
+          <Card
+            key={`${item.name}-${item.index}`}
+            moveCard={moveCard}
+            card={item}
+          />
+        ))
+    }
     </div>
   )
 }

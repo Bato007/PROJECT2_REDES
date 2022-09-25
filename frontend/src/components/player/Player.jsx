@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import Card from '../card/Card'
 
 const Player = ({ cards }) => (
-  cards.map((item, index) => (
+  cards.map((item) => (
     <Card
-        // eslint-disable-next-line react/no-array-index-key
-      key={`${item.name}${index}`}
+      key={`${item.name}-${item.index}`}
       card={item}
     />
   ))
