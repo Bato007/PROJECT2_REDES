@@ -14,10 +14,14 @@ const Game = () => {
     setPlayerCards([...playerCards])
   }
 
+  const setInitialDeck = (initialDeck) => {
+    setPlayerCards(initialDeck)
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="game-screen">
-        <Deck isStacked addCardToPlayer={addCardToPlayer} />
+        <Deck addCardToPlayer={addCardToPlayer} setInitialDeck={setInitialDeck} />
         <Player cards={playerCards} />
       </div>
     </DndProvider>

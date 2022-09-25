@@ -63,18 +63,6 @@ const CARDS = [
     quant: 4,
   },
   {
-    id: 18,
-    name: 'Exploding Kitten',
-    src: card18,
-    quant: 4,
-  },
-  {
-    id: 19,
-    name: 'Defuse',
-    src: card19,
-    quant: 6,
-  },
-  {
     id: 22,
     name: 'See the future (3x)',
     src: card22,
@@ -82,24 +70,71 @@ const CARDS = [
   },
 ]
 
-const Deck = ({ isStacked, addCardToPlayer }) => {
+const defuse = {
+  id: 19,
+  name: 'Defuse',
+  src: card19,
+  quant: 6,
+}
+
+const explodingKitten = {
+  id: 18,
+  name: 'Exploding Kitten',
+  src: card18,
+  quant: 4,
+}
+
+const Deck = ({ isStacked, addCardToPlayer, setInitialDeck }) => {
   const [deck, setDeck] = useState([])
 
   useEffect(() => {
     const tempDeck = []
+
     CARDS.map((card) => {
       for (let i = 0; i < card.quant; i += 1) {
-        tempDeck.push({
-          ...card,
-          index: tempDeck.length,
-        })
+        tempDeck.push(card)
       }
       return tempDeck
     })
-    // eslint-disable-next-line no-console
-    console.log(tempDeck.length)
+
     // Double shuffle since cards are ordered
-    setDeck(shuffle(shuffle([...tempDeck])))
+    const shuffledDeck = shuffle(shuffle([...tempDeck]))
+    // eslint-disable-next-line no-console
+    console.log('Initial deck', shuffledDeck.length)
+
+    // Pick 6 random cards for the player
+    const playerCards = []
+    for (let i = 0; i < 7; i += 1) {
+      const [card] = shuffledDeck.splice(Math.floor(Math.random() * shuffledDeck.length), 1)
+      playerCards.push({
+        ...card,
+        index: playerCards.length,
+      })
+    }
+    playerCards.push({
+      ...defuse,
+      index: playerCards.length,
+    })
+    setInitialDeck(playerCards)
+    // eslint-disable-next-line no-console
+    console.log('After player deck', shuffledDeck.length)
+
+    for (let i = 0; i < 2; i += 1) {
+      shuffledDeck.push(defuse)
+    }
+    for (let i = 0; i < 3; i += 1) {
+      shuffledDeck.push(explodingKitten)
+    }
+    for (let i = 0; i < shuffledDeck.length; i += 1) {
+      shuffledDeck[i] = {
+        ...shuffledDeck[i],
+        index: i,
+      }
+    }
+    // Double shuffle since cards are ordered
+    setDeck(shuffle(shuffle([...shuffledDeck])))
+    // eslint-disable-next-line no-console
+    console.log('Final length', shuffledDeck.length)
   }, [])
 
   const onCardReveal = () => {
@@ -144,11 +179,13 @@ const Deck = ({ isStacked, addCardToPlayer }) => {
 Deck.propTypes = {
   isStacked: PropTypes.bool,
   addCardToPlayer: PropTypes.func,
+  setInitialDeck: PropTypes.func,
 }
 
 Deck.defaultProps = {
   isStacked: false,
   addCardToPlayer: () => {},
+  setInitialDeck: () => {},
 }
 
 export default Deck

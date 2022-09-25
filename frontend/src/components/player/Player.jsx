@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Card from '../card/Card'
+import './player.scss'
 
 const Player = ({ cards }) => (
-  cards.map((item) => (
-    <Card
-      key={`${item.name}-${item.index}`}
-      card={item}
-    />
-  ))
+  <div className="player-cards">
+    <h1>Player deck</h1>
+    <div className="player-cards-container">
+      {cards.map((item) => (
+        <Card
+          key={`${item.name}-${item.index}`}
+          card={item}
+        />
+      ))}
+    </div>
+  </div>
 )
 
 Player.propTypes = {
