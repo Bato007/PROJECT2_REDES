@@ -29,6 +29,7 @@ import card23 from '../../../assets/cards/23.jpeg'
 import card24 from '../../../assets/cards/24.jpeg'
 import card25 from '../../../assets/cards/25.jpeg'
 import card26 from '../../../assets/cards/26.jpeg'
+import stackedDeck from '../../../assets/stacked-deck.png'
 
 import shuffle from '../../Utils/shuffle'
 
@@ -191,7 +192,7 @@ const CARDS = [
   },
 ]
 
-const Deck = ({ isStacked }) => {
+const Deck = ({ isStacked, addCardToPlayer }) => {
   const [deck, setDeck] = useState([])
 
   useEffect(() => {
@@ -208,20 +209,29 @@ const Deck = ({ isStacked }) => {
     setDeck(shuffle(shuffle(tempDeck)))
   }, [])
 
+  const onCardReveal = () => {
+    const lastCard = deck.pop()
+    addCardToPlayer(lastCard)
+    // eslint-disable-next-line no-console
+    console.log('NEW ARRAY LENGHT', deck.length)
+  }
+
   return (
     <div className={`${isStacked ? 'deck-stacked' : 'deck-show-all'}`}>
       {
         isStacked
           ? (
             <Card
-              card={deck[deck.length - 1]}
+              card={{
+                src: stackedDeck,
+              }}
+              onClick={onCardReveal}
             />
           )
           : deck.map((item, index) => (
             <Card
             // eslint-disable-next-line react/no-array-index-key
               key={`${item.name}${index}`}
-              cardSrc={item.src}
               card={item}
             />
           ))
@@ -232,10 +242,12 @@ const Deck = ({ isStacked }) => {
 
 Deck.propTypes = {
   isStacked: PropTypes.bool,
+  addCardToPlayer: PropTypes.func,
 }
 
 Deck.defaultProps = {
   isStacked: false,
+  addCardToPlayer: () => {},
 }
 
 export default Deck

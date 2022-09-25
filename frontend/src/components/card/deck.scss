@@ -3,10 +3,8 @@
     grid-template-columns: repeat(5, 15vw);
 }
 
-.deck-stacked, .deck-show-all {
-    .card {
-        img {
-            width: 10vw;
-        }
+.card {
+    img {
+        width: 10vw;
     }
 }
