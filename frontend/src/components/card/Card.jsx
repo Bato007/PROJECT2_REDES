@@ -1,34 +1,11 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDrag, useDrop } from 'react-dnd'
+import { useDrag } from 'react-dnd'
 import Button from '../button/Button'
 import './deck.scss'
 
-const Card = ({ card, onClick, moveCard }) => {
-  const ref = useRef()
-
-  const [, drop] = useDrop({
-    accept: 'CARD',
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      }
-    },
-    drop: (item) => {
-      if (!ref.current) {
-        return
-      }
-      const dragIndex = item.index
-      const dropIndex = card.index
-      // Don't replace items with themselves
-      if (dragIndex === dropIndex) {
-        return
-      }
-      moveCard(item, card)
-    },
-  })
-
-  const [, drag] = useDrag({
+const Card = ({ card, onClick }) => {
+  const [, dragRef] = useDrag({
     type: 'CARD',
     item: () => (card),
     collect: (monitor) => ({
@@ -36,10 +13,8 @@ const Card = ({ card, onClick, moveCard }) => {
     }),
   })
 
-  drag(drop(ref))
-
   return (
-    <div className="card-container" ref={ref}>
+    <div className="card-container" ref={dragRef}>
       <Button
         icon={[card.src]}
         classButton="card"
@@ -57,12 +32,10 @@ Card.propTypes = {
     index: PropTypes.number,
   }).isRequired,
   onClick: PropTypes.func,
-  moveCard: PropTypes.func,
 }
 
 Card.defaultProps = {
   onClick: () => {},
-  moveCard: () => {},
 }
 
 export default Card
