@@ -31,7 +31,7 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(jpe?g|jpg|png|gif|woff|woff2|eot|ttf|pdf|svg|otf|mp4)(\?[a-z0-9=.]+)?$/,
+        test: /\.(jpe?g|jpg|png|gif|woff|woff2|eot|ttf|pdf|svg|otf|mp4|JPG)(\?[a-z0-9=.]+)?$/,
         type: 'asset',
         parser: {
           dataUrlCondition: {

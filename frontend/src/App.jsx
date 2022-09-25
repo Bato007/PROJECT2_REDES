@@ -5,12 +5,14 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom'
 import Home from './screens/Home/Home'
+import Game from './screens/Game/Game'
 import './theme.scss'
 
 const App = () => (
   <Router>
     <Routes>
-      <Route path="/*" element={(<Home />)} />
+      <Route path="/" element={(<Home />)} />
+      <Route path="/game" element={(<Game />)} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </Router>
