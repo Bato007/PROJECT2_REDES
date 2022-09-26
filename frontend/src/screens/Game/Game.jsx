@@ -9,6 +9,7 @@ import './game.scss'
 
 const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
+  const [isDead, setIsDead] = useState(false)
   const [discardPile, setDiscardPile] = useState([])
   // eslint-disable-next-line no-unused-vars
   const [playerInTurn, setPlayerInTurn] = useState(2)
@@ -33,6 +34,10 @@ const Game = () => {
   const addCardToPlayer = (card) => {
     playerCards.push(card)
     setPlayerCards([...playerCards])
+    if (card.id === 18
+      && playerCards.findIndex((checkDiffuse) => checkDiffuse.id === 19) === -1) {
+      setIsDead(true)
+    }
   }
 
   const setInitialDeck = (initialDeck) => {
@@ -66,7 +71,11 @@ const Game = () => {
           <CardsPlaceholder cardsLength={7} isInTurn={playerInTurn === 1} />
         </div>
       </div>
-      <Player cards={playerCards} isInTurn={playerInTurn === 2} />
+      <Player
+        cards={playerCards}
+        isDead={isDead}
+        isInTurn={playerInTurn === 2}
+      />
     </div>
   )
 }

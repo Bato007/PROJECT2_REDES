@@ -31,9 +31,11 @@
             .deck-stacked {
                 margin-right: 3vw;
                 img {
-                    opacity: 1;
                     width: 11vw;
                 }
+            }
+            .deck-stacked img, .discard-pile img {
+                opacity: 1;
             }
         }
     }
