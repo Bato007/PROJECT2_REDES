@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import Card from '../card/Card'
 import './player.scss'
 
-const Player = ({ cards }) => (
+const Player = ({ cards, isInTurn }) => (
   <div className="player-cards">
-    <div className="player-cards-container">
+    <div className={`player-cards-container ${isInTurn ? 'isInTurn' : ''}`}>
       {cards.map((item) => (
         <Card
           key={`${item.name}-${item.index}`}
@@ -17,6 +17,7 @@ const Player = ({ cards }) => (
 )
 
 Player.propTypes = {
+  isInTurn: PropTypes.bool,
   cards: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -28,6 +29,7 @@ Player.propTypes = {
 
 Player.defaultProps = {
   cards: [],
+  isInTurn: false,
 }
 
 export default Player

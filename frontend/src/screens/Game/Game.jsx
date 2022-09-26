@@ -10,6 +10,8 @@ import './game.scss'
 const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
   const [discardPile, setDiscardPile] = useState([])
+  // eslint-disable-next-line no-unused-vars
+  const [playerInTurn, setPlayerInTurn] = useState(2)
 
   const [, dropRef] = useDrop({
     accept: 'CARD',
@@ -40,9 +42,9 @@ const Game = () => {
   return (
     <div className="game-screen">
       <div className="decks-container">
-        <CardsPlaceholder cardsLength={15} isRow />
+        <CardsPlaceholder cardsLength={15} isRow isInTurn={playerInTurn === 0} />
         <div className="center-container">
-          <CardsPlaceholder cardsLength={9} />
+          <CardsPlaceholder cardsLength={0} isInTurn={playerInTurn === 3} />
           <div className="centered-deck">
             <Deck
               isStacked
@@ -61,10 +63,10 @@ const Game = () => {
               }
             </div>
           </div>
-          <CardsPlaceholder cardsLength={7} />
+          <CardsPlaceholder cardsLength={7} isInTurn={playerInTurn === 1} />
         </div>
       </div>
-      <Player cards={playerCards} />
+      <Player cards={playerCards} isInTurn={playerInTurn === 2} />
     </div>
   )
 }
