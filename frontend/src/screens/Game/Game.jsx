@@ -47,7 +47,7 @@ const Game = () => {
   return (
     <div className="game-screen">
       <div className="decks-container">
-        <CardsPlaceholder cardsLength={15} isRow isInTurn={playerInTurn === 0} />
+        <CardsPlaceholder isDead cardsLength={15} isRow isInTurn={playerInTurn === 0} />
         <div className="center-container">
           <CardsPlaceholder cardsLength={0} isInTurn={playerInTurn === 3} />
           <div className="centered-deck">
