@@ -40,9 +40,9 @@ const Game = () => {
   return (
     <div className="game-screen">
       <div className="decks-container">
-        <CardsPlaceholder cardsLength={7} isRow />
+        <CardsPlaceholder cardsLength={15} isRow />
         <div className="center-container">
-          <CardsPlaceholder cardsLength={7} />
+          <CardsPlaceholder cardsLength={9} />
           <div className="centered-deck">
             <Deck
               isStacked
