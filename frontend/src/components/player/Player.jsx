@@ -5,7 +5,6 @@ import './player.scss'
 
 const Player = ({ cards }) => (
   <div className="player-cards">
-    <h1>Player deck</h1>
     <div className="player-cards-container">
       {cards.map((item) => (
         <Card

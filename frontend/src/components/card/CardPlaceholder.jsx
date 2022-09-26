@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../button/Button'
-import cardBack from '../../../assets/card-back.jpg'
+import cardBack from '../../../assets/back-card.jpeg'
 import './deck.scss'
 
 const CardsPlaceholder = ({ cardsLength, isRow }) => (
