@@ -11,7 +11,7 @@ const Player = ({ cards, isInTurn, isDead }) => {
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.scrollLeft = ref.current.clientWidth
+      ref.current.scrollLeft = ref.current.scrollWidth
     }
   }, [cards])
 

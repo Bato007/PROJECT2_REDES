@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -18,6 +19,7 @@ import stackedDeck from '../../../assets/stacked-deck.png'
 
 import shuffle from '../../Utils/shuffle'
 import Button from '../button/Button'
+import SortableCard from './SortableCard'
 
 const CARDS = [
   {
@@ -84,23 +86,30 @@ const explodingKitten = {
   quant: 4,
 }
 
-const Deck = ({ isStacked, addCardToPlayer, setInitialDeck }) => {
+const Deck = ({
+  isStacked,
+  isSorting,
+  addCardToPlayer,
+  setInitialDeck,
+  closeIsSorting,
+  removeCardToPlayer,
+}) => {
   const [deck, setDeck] = useState([])
+  const [lastCard, setLastCard] = useState()
+  const [tempDeck, setTempDeck] = useState([])
 
   useEffect(() => {
-    const tempDeck = []
+    const tempCards = []
 
     CARDS.map((card) => {
       for (let i = 0; i < card.quant; i += 1) {
-        tempDeck.push(card)
+        tempCards.push(card)
       }
-      return tempDeck
+      return tempCards
     })
 
     // Double shuffle since cards are ordered
-    const shuffledDeck = shuffle(shuffle([...tempDeck]))
-    // eslint-disable-next-line no-console
-    console.log('Initial deck', shuffledDeck.length)
+    const shuffledDeck = shuffle(shuffle([...tempCards]))
 
     // Pick 6 random cards for the player
     const playerCards = []
@@ -108,16 +117,14 @@ const Deck = ({ isStacked, addCardToPlayer, setInitialDeck }) => {
       const [card] = shuffledDeck.splice(Math.floor(Math.random() * shuffledDeck.length), 1)
       playerCards.push({
         ...card,
-        index: playerCards.length,
+        index: `initial-deck-${playerCards.length}`,
       })
     }
     playerCards.push({
       ...defuse,
-      index: playerCards.length,
+      index: `initial-deck-${playerCards.length}`,
     })
     setInitialDeck(playerCards)
-    // eslint-disable-next-line no-console
-    console.log('After player deck', shuffledDeck.length)
 
     for (let i = 0; i < 2; i += 1) {
       shuffledDeck.push(defuse)
@@ -132,25 +139,38 @@ const Deck = ({ isStacked, addCardToPlayer, setInitialDeck }) => {
       }
     }
     // Double shuffle since cards are ordered
-    setDeck(shuffle(shuffle([...shuffledDeck])))
-    // eslint-disable-next-line no-console
-    console.log('Final length', shuffledDeck.length)
+    const finalShuffle = shuffle(shuffle(shuffledDeck))
+    setDeck(finalShuffle)
   }, [])
 
+  useEffect(() => {
+    if (isSorting) {
+      setTempDeck([...deck, {
+        ...lastCard,
+        showFront: true,
+      }])
+    }
+  }, [isSorting])
+
   const onCardReveal = () => {
-    const lastCard = deck.pop()
-    addCardToPlayer(lastCard)
+    const card = deck.pop()
+    setLastCard(card)
+    addCardToPlayer(card)
   }
 
   const moveCard = (dragCard, dropCard) => {
-    const dragCardIndex = deck.findIndex((card) => card.index === dragCard.index)
-    const dropCardIndex = deck.findIndex((card) => card.index === dropCard.index)
+    const dropCardIndex = tempDeck.findIndex((card) => card.index === dropCard.index)
+    const dragCardIndex = tempDeck.findIndex((card) => card.index === dragCard.index)
+    tempDeck.splice(dragCardIndex, 1)
+    tempDeck.splice(dropCardIndex, 0, dragCard)
 
-    const tempCard = deck[dragCardIndex]
-    deck[dragCardIndex] = deck[dropCardIndex]
-    deck[dropCardIndex] = tempCard
+    setTempDeck([...tempDeck])
+  }
 
-    setDeck([...deck])
+  const saveTempDeck = () => {
+    removeCardToPlayer(lastCard)
+    setDeck([...tempDeck])
+    closeIsSorting()
   }
 
   return (
@@ -164,13 +184,31 @@ const Deck = ({ isStacked, addCardToPlayer, setInitialDeck }) => {
             onClick={onCardReveal}
           />
         )
-        : deck.map((item) => (
-          <Card
-            key={`${item.name}-${item.index}`}
-            moveCard={moveCard}
-            card={item}
-          />
-        ))
+        : isSorting
+          ? (
+            <>
+              <h2 className="sorting-mark">On bottom</h2>
+              {tempDeck.map((item) => (
+                <SortableCard
+                  key={`${item.name}-${item.index}`}
+                  moveCard={moveCard}
+                  card={item}
+                />
+              ))}
+              <h2 className="sorting-mark">On top</h2>
+              <Button
+                text="Save deck"
+                classButton="secondary-button"
+                onClick={saveTempDeck}
+              />
+            </>
+          )
+          : deck.map((item) => (
+            <Card
+              key={`${item.name}-${item.index}`}
+              card={item}
+            />
+          ))
     }
     </div>
   )
@@ -178,14 +216,20 @@ const Deck = ({ isStacked, addCardToPlayer, setInitialDeck }) => {
 
 Deck.propTypes = {
   isStacked: PropTypes.bool,
+  isSorting: PropTypes.bool,
   addCardToPlayer: PropTypes.func,
   setInitialDeck: PropTypes.func,
+  closeIsSorting: PropTypes.func,
+  removeCardToPlayer: PropTypes.func,
 }
 
 Deck.defaultProps = {
   isStacked: false,
+  isSorting: false,
   addCardToPlayer: () => {},
   setInitialDeck: () => {},
+  closeIsSorting: () => {},
+  removeCardToPlayer: () => {},
 }
 
 export default Deck

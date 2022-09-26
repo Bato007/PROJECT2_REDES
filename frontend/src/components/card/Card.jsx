@@ -29,7 +29,10 @@ Card.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
     src: PropTypes.string,
-    index: PropTypes.number,
+    index: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
   }).isRequired,
   onClick: PropTypes.func,
 }

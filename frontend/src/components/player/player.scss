@@ -8,6 +8,9 @@
         display: flex;
         max-width: 70vw;
         overflow-x: scroll;
+        img {
+            opacity: 0.5;
+        }
     }
 
     .dead-popup {

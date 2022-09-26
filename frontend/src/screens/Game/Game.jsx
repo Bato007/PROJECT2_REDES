@@ -11,6 +11,7 @@ const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
   const [isDead, setIsDead] = useState(false)
   const [discardPile, setDiscardPile] = useState([])
+  const [isSorting, setIsSorting] = useState(false)
   // eslint-disable-next-line no-unused-vars
   const [playerInTurn, setPlayerInTurn] = useState(2)
 
@@ -26,6 +27,13 @@ const Game = () => {
       playerCards.splice(removeCard, 1)
 
       discardPile.push(item)
+
+      // Ussing defuse card
+      if (item.id === 19
+        && playerCards.findIndex((checkExploding) => checkExploding.id === 18)) {
+        setIsSorting(true)
+      }
+
       setDiscardPile([...discardPile])
       setPlayerCards([...playerCards])
     },
@@ -40,6 +48,12 @@ const Game = () => {
     }
   }
 
+  const removeCardToPlayer = (card) => {
+    const index = playerCards.findIndex((checkDiffuse) => checkDiffuse.id === card.id)
+    playerCards.splice(index, 1)
+    setPlayerCards([...playerCards])
+  }
+
   const setInitialDeck = (initialDeck) => {
     setPlayerCards(initialDeck)
   }
@@ -52,9 +66,12 @@ const Game = () => {
           <CardsPlaceholder cardsLength={0} isInTurn={playerInTurn === 3} />
           <div className="centered-deck">
             <Deck
-              isStacked
+              isStacked={!isSorting}
+              isSorting={isSorting}
               addCardToPlayer={addCardToPlayer}
               setInitialDeck={setInitialDeck}
+              closeIsSorting={() => setIsSorting(false)}
+              removeCardToPlayer={removeCardToPlayer}
             />
             <div className="discard-pile" ref={dropRef}>
               {

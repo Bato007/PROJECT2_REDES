@@ -12,8 +12,10 @@ const CardsPlaceholder = ({
 }) => (
   <div className={`card-placeholder-container ${isRow ? 'row' : 'column'} ${isInTurn ? 'isInTurn' : ''}`}>
     {
-        Array(cardsLength).fill(null).map(() => (
+        Array(cardsLength).fill(null).map((item, index) => (
           <Button
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
             icon={[cardBack]}
             classButton="card"
           />
