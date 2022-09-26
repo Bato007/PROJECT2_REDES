@@ -1,9 +1,47 @@
 .deck-show-all {
-    display: grid;
-    grid-template-columns: repeat(5, 15vw);
+    display: flexbox;
+}
+
+.card-placeholder-container {
+    display: flex;
+    max-width: 50vw;
+    max-height: 45vh;
+
+    &.column {
+        flex-direction: column;
+        height: 45vh;
+        .card {
+            flex: 1 0 0;
+            overflow: hidden;
+            min-height: 0;
+        }
+        :last-child {
+            flex: 0 0 auto;
+        }
+    }
+
+    &.row {
+        flex-direction: row;
+        transform: rotate(180deg);
+        position: relative;
+        height: 5vw;
+        margin: auto;
+
+        .card {
+            flex: 1 0 0;
+            overflow: hidden;
+        }
+        :last-child {
+            flex: 0 0 auto;
+        }
+    }
 }
 
 .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 15vw;
     img {
         width: 10vw;
     }

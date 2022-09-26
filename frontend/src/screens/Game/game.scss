@@ -9,10 +9,28 @@
 
     .decks-container {
         display: flex;
-        .empty-pile {        
-            width: 10vw;
-            height: 15vw;
-            border: 1px dotted black;
+        flex-direction: column;
+        width: 70vw;
+        max-width: 70vw;
+
+        .center-container {   
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .centered-deck {
+            display: flex;
+            .empty-pile {        
+                width: 10vw;
+                height: 15vw;
+                border: 1px dotted black;
+            }
+            .deck-stacked {
+                margin-right: 3vw;
+                img {
+                    width: 11vw;
+                }
+            }
         }
     }
 }

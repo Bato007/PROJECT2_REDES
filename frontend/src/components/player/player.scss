@@ -4,5 +4,7 @@
 
     &-container {
         display: flex;
+        max-width: 70vw;
+        overflow-x: scroll;
     }
 }

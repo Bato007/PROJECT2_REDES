@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDrop } from 'react-dnd'
 import Card from '../../components/card/Card'
+import CardsPlaceholder from '../../components/card/CardPlaceholder'
 
 import Deck from '../../components/card/Deck'
 import Player from '../../components/player/Player'
@@ -39,13 +40,17 @@ const Game = () => {
   return (
     <div className="game-screen">
       <div className="decks-container">
-        <Deck
-          isStacked
-          addCardToPlayer={addCardToPlayer}
-          setInitialDeck={setInitialDeck}
-        />
-        <div className="discard-pile" ref={dropRef}>
-          {
+        <CardsPlaceholder cardsLength={7} isRow />
+        <div className="center-container">
+          <CardsPlaceholder cardsLength={7} />
+          <div className="centered-deck">
+            <Deck
+              isStacked
+              addCardToPlayer={addCardToPlayer}
+              setInitialDeck={setInitialDeck}
+            />
+            <div className="discard-pile" ref={dropRef}>
+              {
           discardPile.length > 0
             ? (
               <Card
@@ -53,7 +58,10 @@ const Game = () => {
               />
             )
             : <div className="empty-pile" />
-        }
+              }
+            </div>
+          </div>
+          <CardsPlaceholder cardsLength={7} />
         </div>
       </div>
       <Player cards={playerCards} />
