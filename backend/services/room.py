@@ -5,6 +5,14 @@ class Rooms(object):
     self.collection = 'rooms'
     self.roomsDB = database[self.collection]
 
+  def mixCards(self, deck, cards):
+    # Now adds in a random position the 
+    index = random.sample(range(0, len(deck)), len(cards))
+    for i in index:
+      deck.insert(i, cards.pop(0))
+    
+    return deck
+
   # Joins the user to a room
   def joinRoom(self, roomID, username):
     room = list(self.roomsDB.find({ 'roomID': roomID }))
@@ -16,6 +24,7 @@ class Rooms(object):
     # Controll checks
     if (username in users): raise Exception('User already registered') 
     if (len(users) >= 4): raise Exception('Room is full')
+    if (room['started'] == False): raise Exception('Room started game') 
 
     # Gets the users and adds the new one
     users.append(username)
@@ -64,9 +73,16 @@ class Rooms(object):
     # Now creates the decks
     deck = [] 
     defuses = []
+    bombs = []
 
     for card in cards:
-      array = deck if card['id'] != 19 else defuses
+      if (card['id'] == 19):
+        array = defuses
+      elif (card['id'] == 18):
+        array = bombs
+      else:
+        array = deck
+
       for _ in range(card['amount']):
           array.append(card)
 
@@ -75,7 +91,7 @@ class Rooms(object):
     # Makes the game deck
     play_decks = []
 
-    NON_DEFUSE_CARDS = 5
+    NON_DEFUSE_CARDS = 7
     for _ in users:
       user_deck = []
       user_deck.append(defuses.pop(0))
@@ -83,10 +99,14 @@ class Rooms(object):
         user_deck.append(deck.pop(0))
       play_decks.append(user_deck)
 
-    # Now adds in a random position the 
-    index = random.sample(range(0, len(deck)), len(defuses))
-    for i in index:
-      deck.insert(i, defuses.pop(0))
+    deck = self.mixCards(deck, defuses)
+    deck = self.mixCards(deck, bombs)
+
+    # Make a logical change in database
+    self.roomsDB.update_one(
+      { '_id': room['_id'] },
+      { '$set': { 'started': False } }
+    )
 
     return play_decks
 

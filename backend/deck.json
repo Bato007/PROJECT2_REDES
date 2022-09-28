@@ -2,32 +2,26 @@
   {
     "id": 1,
     "name": "Zombie Cat",
-    "amount": 4,
+    "amount": 6,
     "src": "https://drive.google.com/file/d/141xEpyZDaGMXAhO1ldTEHi-FulXrQUR9/view"
   },
   {
     "id": 2,
     "name": "Raindow-Ralphin Cat",
-    "amount": 4,
+    "amount": 6,
     "src": "https://drive.google.com/file/d/1rm4_PC56f9LKijKBD8etmJhmhtU7ZxxA/view"
   },
   {
     "id": 3,
     "name": "Tacocat",
-    "amount": 4,
+    "amount": 6,
     "src": "https://drive.google.com/file/d/1QAh0jf8BbcQ5uU-FQy6PqqVqy7F89iZU/view"
   },
   {
     "id": 4,
     "name": "Beard Cat",
-    "amount": 4,
-    "src": "https://drive.google.com/file/d/1HBZyenXViZvwHfHj0VQDleFbD7juFUG6/view"
-  },
-  {
-    "id": 5,
-    "name": "Feral Cat",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1wmFtx9Sk0QFXkgP1lvC8PYJpGPxv2JoZ/view"
+    "src": "https://drive.google.com/file/d/1HBZyenXViZvwHfHj0VQDleFbD7juFUG6/view"
   },
   {
     "id": 6,
@@ -36,70 +30,16 @@
     "src": "https://drive.google.com/file/d/15X13vZAd8kCm_Y5nWQzMXXCKQabwaf3e/view"
   },
   {
-    "id": 7,
-    "name": "Garbage Collection",
-    "amount": 2,
-    "src": "https://drive.google.com/file/d/14sjosalcsqgzEHjDHkyX72vsJZF33wy-/view"
-  },
-  {
-    "id": 8,
-    "name": "Swap Top and Bottom",
-    "amount": 3,
-    "src": "https://drive.google.com/file/d/1jb0FZt_xcEVtqwPEZedvka7mWeSSDvt8/view"
-  },
-  {
-    "id": 9,
-    "name": "Draw from the bottom",
-    "amount": 3,
-    "src": "https://drive.google.com/file/d/12V8zALhoUZ-e2DVSUxoDIPWUuGtDLe8c/view"
-  },
-  {
     "id": 10,
     "name": "Attack (x2)",
     "amount": 6,
     "src": "https://drive.google.com/file/d/1TP-x3mQIAR_mKbtSoII-qkKKnJ8vojNi/view"
   },
   {
-    "id": 11,
-    "name": "Personal Attack (x3)",
-    "amount": 4,
-    "src": "https://drive.google.com/file/d/1nunGbcQ8QGO9MRoJhRiP6xa_r7AOE_lF/view"
-  },
-  {
-    "id": 12,
-    "name": "Targeted Attack (x2)",
-    "amount": 4,
-    "src": "https://drive.google.com/file/d/1A1LKAPCMu4NHydavPQuO0FJ04Yd4FT10/view"
-  },
-  {
     "id": 13,
     "name": "Skip",
     "amount": 5,
     "src": "https://drive.google.com/file/d/1e2_G5XCpj8FIGiVQc_PuAqdgEAJm93N3/view"
-  },
-  {
-    "id": 14,
-    "name": "Super skip",
-    "amount": 2,
-    "src": "https://drive.google.com/file/d/1bvAjU5sIr2JJ5ig9oAwPMwRLvyuAqAUz/view"
-  },
-  {
-    "id": 15,
-    "name": "Reverse",
-    "amount": 5,
-    "src": "https://drive.google.com/file/d/1By4k0qePR53TMHrOyqHCAPXLRMIWew0n/view"
-  },
-  {
-    "id": 16,
-    "name": "Catomic Bomb",
-    "amount": 1,
-    "src": "https://drive.google.com/file/d/1P-d9zou3MOTsH4zvEVBMyvHkEHsrSDGn/view"
-  },
-  {
-    "id": 17,
-    "name": "Bury",
-    "amount": 4,
-    "src": "https://drive.google.com/file/d/1pHQko2PDGPuTDJ0GPO6-75a-O3PzgmKv/view"
   },
   {
     "id": 18,
@@ -114,45 +54,9 @@
     "src": "https://drive.google.com/file/d/1HJ3cBL9Yu1GOyv8bhyS3AY0fyrOldyvB/view"
   },
   {
-    "id": 20,
-    "name": "Imploding Kitten",
-    "amount": 4,
-    "src": "https://drive.google.com/file/d/1PYRxBHwlAUt4UtnBCYKMit36cy1NLfSD/view"
-  },
-  {
-    "id": 21,
-    "name": "Streaking Kitten",
-    "amount": 1,
-    "src": "https://drive.google.com/file/d/1jb9zd0nQ-0_6Y3K62-XXQjwhbtsibBeX/view"
-  },
-  {
     "id": 22,
     "name": "See the future (3x)",
     "amount": 6,
     "src": "https://drive.google.com/file/d/1tYm5CuQNAb9XBMxvxyR_zWA8cguGI-Qk/view"
-  },
-  {
-    "id": 23,
-    "name": "See the future (5x)",
-    "amount": 3,
-    "src": "https://drive.google.com/file/d/1yBmJxejkx7By0v7jHwNrFbbn-fi9m8au/view"
-  },
-  {
-    "id": 24,
-    "name": "Alter the future (3x)",
-    "amount": 3,
-    "src": "https://drive.google.com/file/d/1G55AB8y_3-6clvQYhFA3WBTa8aLzkvyI/view"
-  },
-  {
-    "id": 25,
-    "name": "Alter the future (3x) NOW",
-    "amount": 2,
-    "src": "https://drive.google.com/file/d/1ZipJTA1d5nS4HlWw9zUVASo95o3x6Rg9/view"
-  },
-  {
-    "id": 26,
-    "name": "Mark",
-    "amount": 4,
-    "src": "https://drive.google.com/file/d/1Y1ZtveW7pLgS6usBgufqkukIui5QyjaQ/view"
   }
 ]
