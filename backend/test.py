@@ -9,3 +9,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     data = s.recv(1024)
 
 print(f"Received {data!r}")
+
+# import mongo
+# from services.room import Rooms
+
+# # Init services
+# database = mongo.connect()
+# roomService = Rooms(database)
+# roomService.startRoom('dsf')

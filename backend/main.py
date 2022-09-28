@@ -5,7 +5,7 @@ from threading import Thread, Event
 
 # Import services
 import mongo
-from services.room import Room
+from services.room import Rooms
 
 HOST = sk.gethostname()   # The server's hostname
 PORT = 8081               # The port used by the server
@@ -15,20 +15,14 @@ sessions = []
 
 # Init services
 database = mongo.connect()
-roomService = Room(database)
+roomService = Rooms(database)
 
 def getMessage(value): return str.encode(value)
 
 async def roomHandler(request):
   try:
     # Creates a new room
-    if (request['action'] == 'create'):
-      roomID = roomService.createRoom(request['username'])
-      return {
-        'code': 200,
-        'roomID': roomID,
-      }
-    elif (request['action'] == 'join'):
+    if (request['action'] == 'join'):
       users = roomService.joinRoom(request['roomID'], request['username'])
       return {
         'code': 200,
@@ -40,9 +34,10 @@ async def roomHandler(request):
         'code': 200,
       }
     elif (request['action'] == 'start'):
-      roomID = roomService.startRoom(request['roomID'])
+      decks = roomService.startRoom(request['roomID'])
       return {
         'code': 200,
+        'deck': decks[0],
       }
     else: raise Exception('Not valid operation')
   
