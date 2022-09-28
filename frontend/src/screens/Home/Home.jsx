@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import title from '../../../assets/title.png'
 import Button from '../../components/button/Button'
+import { SocketContext } from '../../App'
 import './home.scss'
 
 const Home = () => {
@@ -12,19 +13,25 @@ const Home = () => {
     roomID: '',
   })
 
-  // Create WebSocket connection.
-  const socket = new WebSocket('ws://localhost:8081')
+  const socket = useContext(SocketContext)
 
   // Connection opened
-  socket.addEventListener('open', (event) => {
-    socket.send('Hello Server!', event)
-  })
+  socket.onopen = async (e) => {
+    console.log('Socket opened', e)
+  }
+
+  socket.onmessage = (event) => {
+    console.log(event.data)
+  }
 
   const checkData = (e, name) => {
     if (e.key === 'Enter' && ref.current.value !== '') {
       joinRoomData[name] = ref.current.value
       ref.current.value = ''
       setJoinRoomData({ ...joinRoomData })
+      if (joinRoomData.username !== '') {
+        socket.send(JSON.stringify(joinRoomData))
+      }
     }
   }
 
@@ -33,7 +40,7 @@ const Home = () => {
       <img src={title} alt="title" />
       <div className="nickname-container">
         {
-          joinRoomData.nickname === ''
+          joinRoomData.roomID !== ''
             ? (
               <>
                 <input ref={ref} type="text" onKeyDown={(e) => checkData(e, 'username')} placeholder="Nickname" />

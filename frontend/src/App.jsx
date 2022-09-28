@@ -10,18 +10,28 @@ import Home from './screens/Home/Home'
 import Game from './screens/Game/Game'
 import './theme.scss'
 
-const App = () => (
-  <Router>
-    <Routes>
-      <Route path="/" element={(<Home />)} />
-      <Route
-        path="/game"
-        element={(
-          <DndProvider backend={HTML5Backend}><Game /></DndProvider>)}
-      />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
-  </Router>
-)
+export const SocketContext = React.createContext(null);
+
+const App = () => {
+
+  // Create WebSocket connection.
+  const [socket, setSocket] = React.useState(new WebSocket('ws://localhost:8081'))
+
+  return (
+    <Router>
+      <SocketContext.Provider value={socket}>
+        <Routes>
+          <Route path="/" element={(<Home />)} />
+          <Route
+            path="/game"
+            element={(
+              <DndProvider backend={HTML5Backend}><Game /></DndProvider>)}
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </SocketContext.Provider>
+    </Router>
+  )
+}
 
 ReactDOM.render(<App />, document.getElementById('root'))
