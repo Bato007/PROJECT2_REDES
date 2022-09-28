@@ -14,43 +14,13 @@
  * @param {string} user 
  * @returns 
  */
-const draw = (user) => {
+const draw = (user, roomId) => {
   return (
     {
       type: 'action',
       action: 'draw',
-      username: user
-    }
-  )
-}
-
-/**
- * Ends the current turn of the player
- * @param {string} user 
- * @returns 
- */
-const endTurn = (user) => {
-  return (
-    {
-      type: 'action',
-      action: 'end turn',
-      username: user
-    }
-  )
-}
-
-/**
- * User loses.
- * Doesn't have more turns
- * @param {string} user 
- * @returns 
- */
-const lose = (user) => {
-  return(
-    {
-      type: 'action',
-      action: 'lose',
-      username: user
+      username: user,
+      roomid: roomId
     }
   )
 }
@@ -60,12 +30,13 @@ const lose = (user) => {
  * @param {string} user 
  * @returns 
  */
-const defuse = (user) => {
+const defuse = (user, roomId) => {
   return (
     {
       type: 'action',
       action: 'defuse',
-      username: user
+      username: user,
+      roomid: roomId
     }
   )
 }
@@ -80,11 +51,12 @@ const defuse = (user) => {
  * Shuffle the Draw pile thoroughly. (Useful when you know there's an Exploding Kitten coming.)
  * @returns 
  */
-const shuffle = () => {
+const shuffle = (roomId) => {
   return (
     {
       type: 'action',
-      action: 'shuffle'
+      action: 'shuffle',
+      roomid: roomId
     }
   )
 }
@@ -97,12 +69,13 @@ const shuffle = () => {
  * @param {string} user Who used the card (against the next in line)
  * @returns 
  */
-const attack = (user) => {
+const attack = (user, roomId) => {
   return (
     {
       type: 'action',
       action: 'attack',
-      username: user
+      username: user,
+      roomid: roomId
     }
   )
 }
@@ -112,11 +85,13 @@ const attack = (user) => {
  * Can skip 1 turn as a defense of an attack card
  * @returns 
  */
-const skip = () => {
+const skip = (user, roomId) => {
   return (
     {
       type: 'action',
-      action: 'skip'
+      action: 'skip',
+      username: user,
+      roomid: roomId
     }
   )
 }
@@ -126,12 +101,13 @@ const skip = () => {
  * @param {string} user Who used the card, to reveal the 3 cards on top
  * @returns 
  */
-const future = (user) => {
+const future = (user, roomId) => {
   return (
     {
       type: 'action',
       action: 'future',
-      username: user
+      username: user,
+      roomid: roomId
     }
   )
 }
@@ -142,13 +118,14 @@ const future = (user) => {
  * @param {string} target 
  * @returns 
  */
-const cat = (user, target) => {
+const cat = (user, target, roomId) => {
   return (
     {
       type: 'action',
       action: 'steal',
       username: user,
-      target: target
+      target: target,
+      roomid: roomId
     }
   )
 }
