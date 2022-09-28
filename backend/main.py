@@ -5,20 +5,91 @@ import json, asyncio
 # Import services
 import mongo
 from services.room import Rooms
+from services.game import Game
 
 HOST = sk.gethostname()   # The server's hostname
 PORT = 8081               # The port used by the server
 BUFFER_SIZE = 1024
 
-sessions = []
+GAMES = {}
 
 # Init services
 database = mongo.connect()
 roomService = Rooms(database)
 
-def getMessage(value): return str.encode(value)
+def broadcast(roomID, response):
+  try:
+    _, connected = GAMES[roomID]
+    print('[SERVER] Sending to', _.roomID, ':', response)
+    websockets.broadcast(connected, json.dumps(response))
+  except Exception as e:
+    print('[ERROR] BROADCAST:', e)
 
-async def roomHandler(request):
+async def roomHandler(request, websocket):
+  try:
+    # Creates a new room
+    if (request['action'] == 'join'):
+      users = roomService.joinRoom(request['roomID'], request['username'])
+
+      # Add information of the user for the game
+      if (request['roomID'] in GAMES):
+        game, connected = GAMES[request['roomID']]
+        game.addNewUser(request['username'])
+        connected.add(websocket)
+        GAMES[request['roomID']] =  game, connected
+
+      else:
+        game = Game(request['roomID'])
+        game.addNewUser(request['username'])
+        connected = {websocket}
+        GAMES[request['roomID']] =  game, connected
+
+      return {
+        'code': 200,
+        'users': users,
+      }
+
+    elif (request['action'] == 'leave'):
+      roomService.leaveRoom(request['roomID'], request['username'])
+
+      # Leaves room
+      game, connected = GAMES[request['roomID']]
+      game.removeUser(request['username'])
+      connected.remove(websocket)
+
+      if (len(game.users) == 0):
+        del GAMES[request['roomID']]
+      else:
+        GAMES[request['roomID']] =  game, connected
+
+      return {
+        'code': 200,
+      }
+
+    elif (request['action'] == 'start'):
+      decks = roomService.startRoom(request['roomID'])
+      
+      # Start new game
+      game, connected = GAMES[request['roomID']]
+      turn = game.setGame(decks['deck'], decks['player_deck'])
+      GAMES[request['roomID']] =  game, connected
+
+      return {
+        'code': 200,
+        'decks': decks['player_deck'],
+        'turn': turn,
+      }
+    else: raise Exception('Not valid operation')
+  
+  # If there is an error
+  except Exception as e:
+    print('[ERROR] ON ROOM:', e)
+    return {
+        'code': 404,
+        'message': str(e),
+      }
+
+async def gameHandler(request):
   try:
     # Creates a new room
     if (request['action'] == 'join'):
@@ -48,6 +119,24 @@ async def roomHandler(request):
         'message': str(e),
       }
 
+async def chatHandler(request):
+  try:
+    # Creates a new message
+    return {
+      'code': 200,
+      'roomID': request['roomID'],
+      'sender': request['username'],
+      'message': request['message'],
+    }
+  
+  # If there is an error
+  except Exception as e:
+    print('[ERROR] ON CHAT:', e)
+    return {
+        'code': 404,
+        'message': str(e),
+      }
+
 async def sessionHandler(websocket):
   while True:
       # Parent told to exit
@@ -58,19 +147,22 @@ async def sessionHandler(websocket):
 
         # Check the request type
         if (request['type'] == 'room'):
-          response = await roomHandler(request)
-        
-        await websocket.send(getMessage(json.dumps(response)))
+          response = await roomHandler(request, websocket)
+          broadcast(request['roomID'], response)
+        elif (request['type'] == 'game'):
+          response = await gameHandler(request, websocket)
+        elif (request['type'] == 'chat'):
+          response = await chatHandler(request, websocket)
+          broadcast(request['roomID'], response)
 
       except Exception as e:
         print('[ERROR] MAIN ERROR:', e)
-        await websocket.send(getMessage('ERROR'))
+        await websocket.send('ERROR')
         continue
 
       except websockets.ConnectionClosedOK as e:
         print('[SERVER] Websocket closed', e)
         break
-
 
 async def main():
   async with websockets.serve(sessionHandler, "", PORT):

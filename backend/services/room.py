@@ -88,17 +88,18 @@ class Rooms(object):
 
     random.shuffle(deck)
 
-    # Makes the game deck
-    play_decks = []
+    # Makes the players deck
+    play_decks = {}
 
     NON_DEFUSE_CARDS = 7
-    for _ in users:
+    for user in users:
       user_deck = []
       user_deck.append(defuses.pop(0))
       for _ in range(NON_DEFUSE_CARDS):
         user_deck.append(deck.pop(0))
-      play_decks.append(user_deck)
+      play_decks[user] = user_deck[:]
 
+    # Shuffles the cards
     deck = self.mixCards(deck, defuses)
     deck = self.mixCards(deck, bombs)
 
@@ -108,7 +109,11 @@ class Rooms(object):
       { '$set': { 'started': False } }
     )
 
-    return play_decks
+    return {
+      'player_deck': play_decks,
+      'deck': deck,
+      'users': users,
+    }
 
 if __name__ == '__main__':
   print(__name__)
