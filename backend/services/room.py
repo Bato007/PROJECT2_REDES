@@ -24,7 +24,7 @@ class Rooms(object):
     # Controll checks
     if (username in users): raise Exception('User already registered') 
     if (len(users) >= 4): raise Exception('Room is full')
-    if (room['started'] == False): raise Exception('Room started game') 
+    if (room['started'] == True): raise Exception('Room started game') 
 
     # Gets the users and adds the new one
     users.append(username)

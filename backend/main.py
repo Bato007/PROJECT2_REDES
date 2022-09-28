@@ -45,45 +45,12 @@ async def roomHandler(request):
     print('[ERROR] ON ROOM:', e)
     return {
         'code': 404,
-        'message': e,
-      }
-
-async def roomHandler(request):
-  try:
-    # Creates a new room
-    if (request['action'] == 'join'):
-      users = roomService.joinRoom(request['roomID'], request['username'])
-      return {
-        'code': 200,
-        'users': users,
-      }
-    elif (request['action'] == 'leave'):
-      roomService.leaveRoom(request['roomID'], request['username'])
-      return {
-        'code': 200,
-      }
-    elif (request['action'] == 'start'):
-      decks = roomService.startRoom(request['roomID'])
-      return {
-        'code': 200,
-        'deck': decks[0],
-      }
-    else: raise Exception('Not valid operation')
-  
-  # If there is an error
-  except Exception as e:
-    print('[ERROR] ON ROOM:', e)
-    return {
-        'code': 404,
-        'message': e,
+        'message': str(e),
       }
 
 async def sessionHandler(websocket):
-  print('WUUUUUUUUUUUU NEWWWWWWWWWWW')
-
   while True:
       # Parent told to exit
-
       message = await websocket.recv()
 
       try:
@@ -92,7 +59,7 @@ async def sessionHandler(websocket):
         # Check the request type
         if (request['type'] == 'room'):
           response = await roomHandler(request)
-
+        
         await websocket.send(getMessage(json.dumps(response)))
 
       except Exception as e:
