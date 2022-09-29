@@ -176,7 +176,7 @@ const Game = () => {
   })
 
   const addCardToPlayer = () => {
-    if (playerInTurn !== userVal) {
+    if (playerInTurn !== userVal || !roundTableDecks[userVal]) {
       return
     }
     socketVal.send(JSON.stringify(
