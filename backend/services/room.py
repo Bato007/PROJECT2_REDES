@@ -11,7 +11,7 @@ class Rooms(object):
     index = random.sample(range(0, len(deck)), len(cards))
     for i in index:
       card = cards.pop(0)
-      deck.insert(i, )
+      deck.insert(i, card)
     
     return deck
 
