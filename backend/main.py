@@ -145,6 +145,8 @@ async def gameHandler(request):
       return response
 
     elif (request['action'] == 'steal'):
+      game, _ = GAMES[request['roomID']]
+
       target = request['target'] if 'target' in request else None
       response = game.steal(request['username'], target)
       response['action'] = 'steal'
@@ -215,10 +217,16 @@ async def sessionHandler(websocket):
         break
 
 async def main():
-  async with websockets.serve(sessionHandler, "", PORT):
-    await asyncio.Future()  # run forever
+    async with websockets.serve(sessionHandler, "", PORT):
+      try:
+        await asyncio.Future()  # run forever
+      except:
+        print('ERROR WEB')
 
 if __name__ == "__main__":
   print('[SERVER] Started')
   print('[SERVER] Listening from port:', PORT)
-  asyncio.run(main())
+  try:
+    asyncio.run(main())
+  except:
+    print('ERROR HERE')
