@@ -106,6 +106,7 @@ async def gameHandler(request):
         'username': action['username'],
         'turn': action['turn'],
         'lost': action['lost'],
+        'pileSize': action['pileSize'],
         'decksSize': action['decksSize'],
         'action': 'draw',
       }
@@ -122,6 +123,7 @@ async def gameHandler(request):
         'card': request['card'],
         'username': request['username'],
         'turn': action['turn'],
+        'pileSize': action['pileSize'],
         'decksSize': action['decksSize'],
         'action': 'put',
       }
@@ -132,8 +134,6 @@ async def gameHandler(request):
       if ('stealed' in action):
         response['stealed'] = action['stealed'] 
         response['target'] = action['target'] 
-      if ('deckSize' in action):
-        response['deckSize'] = action['deckSize'] 
       if ('target_cards' in action):
         response['targetCards'] = action['target_cards'] 
       if ('lost' in action):

@@ -62,14 +62,16 @@ class Game(object):
     # Check the type of the card
     stealCards = [1, 2, 3, 4]
     if (card['id'] in stealCards):
-
+      print('HOLLAAA')
       # Check if can steal
       if (
         (self.lastCardPut['id'] in stealCards) and (self.lastUserPut == username)
       ):
+        print('HOLLAAA IN IF', target)
         # Steal to target
         victim_deck = self.usersDeck[target]
 
+        print('HOLLAAA IN IF', len(victim_deck))
         # Check if the user has at least 2 cards
         stealed_cards = []
         if (len(victim_deck) >= 2):
@@ -85,11 +87,13 @@ class Game(object):
         for card in stealed_cards:
           userDeck.append(card)
 
+        self.removeCard(username, card['id'])
         return {
           'turn': self.currentTurn,
           'stealed': stealed_cards,
           'username': username,
           'target': target,
+          'pileSize': len(self.deck),
           'decksSize': self.getUserLenDeck(),
         }
 
@@ -97,6 +101,7 @@ class Game(object):
       return {
         'turn': self.currentTurn,
         'username': username,
+        'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
 
@@ -107,6 +112,7 @@ class Game(object):
 
       return {
         'turn': self.currentTurn,
+        'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
 
@@ -127,6 +133,7 @@ class Game(object):
             'target': target,
             'turn': username,
             'lost': True,
+            'pileSize': len(self.deck),
             'decksSize': self.getUserLenDeck(),
           }
         
@@ -139,6 +146,7 @@ class Game(object):
         'target_cards': cards,
         'turn': username,
         'lost': False,
+        'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
 
@@ -148,6 +156,7 @@ class Game(object):
       self.removeCard(username, card['id'])
 
       return {
+        'pileSize': len(self.deck),
         'turn': self.currentTurn,
         'decksSize': self.getUserLenDeck(),
       }
@@ -160,6 +169,7 @@ class Game(object):
       self.deck.insert(target, card)
 
       return {
+          'pileSize': len(self.deck),
           'turn': self.currentTurn,
           'decksSize': self.getUserLenDeck(),
         }
@@ -169,7 +179,7 @@ class Game(object):
       self.removeCard(username, card['id'])
 
       return {
-        'deckSize': len(self.deck),
+        'pileSize': len(self.deck),
         'turn': self.currentTurn,
         'decksSize': self.getUserLenDeck(),
       }
@@ -182,6 +192,7 @@ class Game(object):
       self.removeCard(username, card['id'])
       
       return {
+        'pileSize': len(self.deck),
         'see_futer': see_futer,
         'turn': self.currentTurn,
         'decksSize': self.getUserLenDeck(),
@@ -205,6 +216,7 @@ class Game(object):
         'turn': self.currentTurn,
         'lost': False,
         'mustDefuse': False,
+        'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
     
@@ -229,6 +241,7 @@ class Game(object):
         'turn': self.currentTurn,
         'lost': True,
         'mustDefuse': False,
+        'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
 
@@ -238,5 +251,6 @@ class Game(object):
         'turn': self.currentTurn,
         'lost': False,
         'mustDefuse': True,
+        'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
