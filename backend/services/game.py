@@ -7,10 +7,19 @@ class Game(object):
     self.users = users
     self.usersDeck = deck_user
 
+    # Game state
+    self.turn = None
+
     # Draw
     self.lastUserDrawed = None
     self.lastCardDrawed = None
-  
+
+  def getCardIndex(self, deck, cardID):
+    for i in range(len(deck)):
+      if (deck[i].id == cardID):
+        return i
+    return -1
+
   def getNewTurns(self, turn):
     i = self.users.index(turn) + 1
     self.users = self.users[i:] + self.users[:i]
@@ -26,10 +35,43 @@ class Game(object):
     self.turns = itertools.cycle(self.users)
     self.deck = deck
     self.usersDeck = deck_users
-    return next(self.turns)
+    self.currentTurn = next(self.turns)
+    return self.currentTurn
 
   def putCard(self, username, card):
-    pass
+
+    # Check the type of the card
+    if (card.id == 1):
+      pass
+    elif (card.id == 2):
+      pass
+    elif (card.id == 3):
+      pass
+    elif (card.id == 4):
+      pass
+    elif (card.id == 6):
+      pass
+    elif (card.id == 10):
+      pass
+    elif (card.id == 13):
+      pass
+    elif (card.id == 18):
+      pass
+    elif (card.id == 19):
+      pass
+    elif (card.id == 22):
+      see_futer = self.deck[:3]
+
+      index = self.getCardIndex(self.usersDeck[username], 22)
+      self.usersDeck[username].pop(index)
+      
+      return {
+        'see_futer': see_futer,
+        'turn': self.currentTurn,
+      }
+
+    else:
+      raise Exception('No\'t valid card') 
 
   # Gets a new card of the deck
   def drawCard(self, username):
@@ -40,10 +82,11 @@ class Game(object):
     # It's not a bomb
     if (drawedCard != 18):
       self.lastCardDrawed = drawedCard
+      self.currentTurn = next(self.turns)
       return {
         'card': drawedCard,
         'username': username,
-        'turn': next(self.turns),
+        'turn': self.currentTurn,
         'lost': False,
       }
     
@@ -63,13 +106,13 @@ class Game(object):
       del self.usersDeck[username]
       self.users.remove(username)
 
-      turn = next(self.turns)
-      self.getNewTurns(turn)  # Generates new turn
+      self.currentTurn = next(self.turns)
+      self.getNewTurns(self.currentTurn)  # Generates new turn
 
       return {
         'card': drawedCard,
         'username': username,
-        'turn': turn,
+        'turn': self.currentTurn,
         'lost': True,
       }
 

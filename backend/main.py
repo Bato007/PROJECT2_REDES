@@ -107,14 +107,20 @@ async def gameHandler(request):
 
     elif (request['action'] == 'put'):
       game, _ = GAMES[request['roomID']]
-      action = game.putCard(request['username'])
-      return {
+      action = game.putCard(request['username'], request['card'])
+
+      response = {
         'code': 200,
-        'card': action['card'],
-        'username': action['username'],
+        'card': request['card'],
+        'username': request['username'],
         'turn': action['turn'],
-        'lost': action['lost'],
       }
+
+      # Check special action
+      if (action['see_futer']):
+        response['futureCards'] = action['see_futer'] 
+
+      return response
 
     else: raise Exception('Not valid operation')
   

@@ -87,7 +87,7 @@ class Rooms(object):
 
       for _ in range(card['amount']):
           card['ID'] = generate()
-          array.append(card)
+          array.append(card.copy())
 
     random.shuffle(deck)
 
