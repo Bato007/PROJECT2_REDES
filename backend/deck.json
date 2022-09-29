@@ -3,60 +3,60 @@
     "id": 1,
     "name": "Zombie Cat",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/141xEpyZDaGMXAhO1ldTEHi-FulXrQUR9/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/1.jpeg"
   },
   {
     "id": 2,
     "name": "Raindow-Ralphin Cat",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1rm4_PC56f9LKijKBD8etmJhmhtU7ZxxA/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/2.JPG"
   },
   {
     "id": 3,
     "name": "Tacocat",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1QAh0jf8BbcQ5uU-FQy6PqqVqy7F89iZU/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/3.JPG"
   },
   {
     "id": 4,
     "name": "Beard Cat",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1HBZyenXViZvwHfHj0VQDleFbD7juFUG6/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/4.JPG"
   },
   {
     "id": 6,
     "name": "Shuffle",
     "amount": 5,
-    "src": "https://drive.google.com/file/d/15X13vZAd8kCm_Y5nWQzMXXCKQabwaf3e/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/6.jpeg"
   },
   {
     "id": 10,
     "name": "Attack (x2)",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1TP-x3mQIAR_mKbtSoII-qkKKnJ8vojNi/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/10.jpeg"
   },
   {
     "id": 13,
     "name": "Skip",
     "amount": 5,
-    "src": "https://drive.google.com/file/d/1e2_G5XCpj8FIGiVQc_PuAqdgEAJm93N3/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/13.jpeg"
   },
   {
     "id": 18,
     "name": "Exploding Kitten",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1Ni27Ayx4GECDCf9cRTBiDBlkDprsJ-vc/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/18.jpeg"
   },
   {
     "id": 19,
     "name": "Defuse",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1HJ3cBL9Yu1GOyv8bhyS3AY0fyrOldyvB/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/19.jpeg"
   },
   {
     "id": 22,
     "name": "See the future (3x)",
     "amount": 6,
-    "src": "https://drive.google.com/file/d/1tYm5CuQNAb9XBMxvxyR_zWA8cguGI-Qk/view"
+    "src": "https://storage.googleapis.com/assets_xkittens/22.jpeg"
   }
 ]

@@ -102,6 +102,7 @@ async def gameHandler(request):
         'card': action['card'],
         'username': action['username'],
         'turn': action['turn'],
+        'lost': action['lost'],
       }
 
     elif (request['action'] == 'put'):
