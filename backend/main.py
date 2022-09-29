@@ -250,7 +250,7 @@ async def statusHandler(request):
   
   # If there is an error
   except Exception as e:
-    print('[ERROR] ON ROOM:', e)
+    print('[ERROR] ON STATUS:', e)
     return {
         'code': 404,
         'message': str(e),
@@ -286,7 +286,7 @@ async def sessionHandler(websocket):
           broadcast(request['roomID'], response)
 
         elif (request['type'] == 'status'):
-          response = await chatHandler(request)
+          response = await statusHandler(request)
 
           if (response['type'] == 'error'): raise Exception(response['message'])
 
