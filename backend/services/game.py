@@ -111,18 +111,25 @@ class Game(object):
 
     # Skip card
     elif (card['id'] == 13):
-      print(self.currentTurn)
       self.currentTurn = next(self.turns)
-      print(self.currentTurn)
       self.removeCard(username, card['id'])
 
       return {
         'turn': self.currentTurn,
       }
 
+    # Bomb card
     elif (card['id'] == 18):
-      pass
+      self.currentTurn = next(self.turns)
 
+      # Insert the bomb
+      self.deck.insert(target, card)
+
+      return {
+          'turn': self.currentTurn,
+        }
+
+    # Defuse card
     elif (card['id'] == 19):
       self.removeCard(username, card['id'])
 
