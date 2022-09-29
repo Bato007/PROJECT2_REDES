@@ -188,9 +188,9 @@ const Deck = ({
           ? (
             <>
               <h2 className="sorting-mark">On bottom</h2>
-              {tempDeck.map((item, index) => (
+              {tempDeck.map((item) => (
                 <SortableCard
-                  key={`${item.name}-${index}`}
+                  key={`${item.ID}`}
                   moveCard={moveCard}
                   card={item}
                 />
@@ -203,9 +203,9 @@ const Deck = ({
               />
             </>
           )
-          : deck.map((item, index) => (
+          : deck.map((item) => (
             <Card
-              key={`${item.name}-${index}`}
+              key={`${item.ID}`}
               card={item}
             />
           ))
