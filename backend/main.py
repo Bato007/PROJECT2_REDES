@@ -102,7 +102,8 @@ async def gameHandler(request):
     if (request['action'] == 'draw'):
       game, _ = GAMES[request['roomID']]
       action = game.drawCard(request['username'])
-      return {
+
+      response = {
         'code': 200,
         'type': 'game',
         'card': action['card'],
@@ -113,6 +114,11 @@ async def gameHandler(request):
         'decksSize': action['decksSize'],
         'action': 'draw',
       }
+
+      if ('winner' in action):
+        response['winner'] = action['winner']
+
+      return response
 
     elif (request['action'] == 'put'):
       game, _ = GAMES[request['roomID']]

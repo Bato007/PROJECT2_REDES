@@ -223,7 +223,7 @@ class Game(object):
       self.currentTurn = next(self.turns)
       self.getNewTurns(self.currentTurn)  # Generates new turn
 
-      return {
+      response = {
         'card': drawedCard,
         'username': username,
         'turn': self.currentTurn,
@@ -232,6 +232,12 @@ class Game(object):
         'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }
+
+      # Check if this user won
+      if (len(self.users) == 1):
+        response['winner'] = self.users[0]
+
+      return response
 
     return {
         'card': drawedCard,
