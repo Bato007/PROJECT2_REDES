@@ -6,6 +6,7 @@ class Game(object):
     self.deck = deck
     self.users = users
     self.usersDeck = deck_user
+    self.lastCardDrawed = None
   
   def getNewTurns(self, turn):
     i = self.users.index(turn) + 1
@@ -27,10 +28,11 @@ class Game(object):
   # Gets a new card of the deck
   def drawCard(self, username):
     drawedCard = self.deck.pop(0)
+    self.lastCardDrawed = drawedCard
 
     # It's not a bomb
     if (drawedCard != 18):
-      self.usersDeck[username].append(drawedCard)
+      self.lastCardDrawed = drawedCard
       return {
         'card': drawedCard,
         'username': username,
@@ -64,5 +66,9 @@ class Game(object):
         'lost': True,
       }
 
-
-    print('holaaa')
+    return {
+        'card': drawedCard,
+        'username': username,
+        'turn': username,
+        'lost': False,
+      }
