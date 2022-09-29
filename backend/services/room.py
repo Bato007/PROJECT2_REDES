@@ -1,5 +1,4 @@
 import json, random
-from random_object_id import generate
 
 class Rooms(object):
   def __init__(self, database) -> None:
@@ -85,8 +84,8 @@ class Rooms(object):
       else:
         array = deck
 
-      for _ in range(card['amount']):
-          card['ID'] = generate()
+      for i in range(card['amount']):
+          card['ID'] = card['name'] + str(i)
           array.append(card.copy())
 
     random.shuffle(deck)
