@@ -41,28 +41,32 @@ class Game(object):
   def putCard(self, username, card):
 
     # Check the type of the card
-    if (card.id == 1):
+    if (card['id'] == 1):
       pass
-    elif (card.id == 2):
+    elif (card['id'] == 2):
       pass
-    elif (card.id == 3):
+    elif (card['id'] == 3):
       pass
-    elif (card.id == 4):
+    elif (card['id'] == 4):
       pass
-    elif (card.id == 6):
+    elif (card['id'] == 6):
       pass
-    elif (card.id == 10):
+    elif (card['id'] == 10):
       pass
-    elif (card.id == 13):
+    elif (card['id'] == 13):
       pass
-    elif (card.id == 18):
+    elif (card['id'] == 18):
       pass
-    elif (card.id == 19):
+    elif (card['id'] == 19):
+
+      index = self.getCardIndex(self.usersDeck[username], card['id'])
       pass
-    elif (card.id == 22):
+
+
+    elif (card['id'] == 22):
       see_futer = self.deck[:3]
 
-      index = self.getCardIndex(self.usersDeck[username], 22)
+      index = self.getCardIndex(self.usersDeck[username], card['id'])
       self.usersDeck[username].pop(index)
       
       return {
