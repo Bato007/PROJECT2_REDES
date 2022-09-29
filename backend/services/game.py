@@ -101,6 +101,7 @@ class Game(object):
 
     # Target Attack
     elif (card['id'] == 10):
+      self.removeCard(username, card['id'])
       cards = []
 
       for i in range(2):
@@ -127,7 +128,6 @@ class Game(object):
         'turn': username,
         'lost': False,
       }
-
 
     # Skip card
     elif (card['id'] == 13):
