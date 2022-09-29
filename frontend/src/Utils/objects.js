@@ -17,10 +17,10 @@
 const draw = (user, roomId) => {
   return (
     {
-      type: 'action',
+      type: 'game',
       action: 'draw',
       username: user,
-      roomid: roomId
+      roomID: roomId
     }
   )
 }
@@ -36,7 +36,7 @@ const defuse = (user, roomId) => {
       type: 'action',
       action: 'defuse',
       username: user,
-      roomid: roomId
+      roomID: roomId
     }
   )
 }
@@ -56,7 +56,7 @@ const shuffle = (roomId) => {
     {
       type: 'action',
       action: 'shuffle',
-      roomid: roomId
+      roomID: roomId
     }
   )
 }
@@ -75,7 +75,7 @@ const attack = (user, roomId) => {
       type: 'action',
       action: 'attack',
       username: user,
-      roomid: roomId
+      roomID: roomId
     }
   )
 }
@@ -91,7 +91,7 @@ const skip = (user, roomId) => {
       type: 'action',
       action: 'skip',
       username: user,
-      roomid: roomId
+      roomID: roomId
     }
   )
 }
@@ -107,7 +107,7 @@ const future = (user, roomId) => {
       type: 'action',
       action: 'future',
       username: user,
-      roomid: roomId
+      roomID: roomId
     }
   )
 }
@@ -125,7 +125,7 @@ const cat = (user, target, roomId) => {
       action: 'steal',
       username: user,
       target: target,
-      roomid: roomId
+      roomID: roomId
     }
   )
 }

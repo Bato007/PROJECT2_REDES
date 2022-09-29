@@ -19,6 +19,7 @@ const Game = () => {
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
+  const [started, setStarted] = useState(false)
 
   const { socket, user, room } = useContext(SocketContext)
   const [socketVal, setSocket] = socket
@@ -38,6 +39,14 @@ const Game = () => {
         setChatBuffer(newState)
         clearTimeout(setChatFalse)
         setChatFalse = setTimeout(() => setNewChat(false), 5000)
+      } else if (res.type === 'room') {
+        if ('decks' in res) {
+          setStarted(true)
+          res.decks[userVal].forEach((card) => {
+            playerCards.push(card)
+          })
+          setPlayerCards([...playerCards])
+        }
       }
     }
   }
@@ -67,18 +76,30 @@ const Game = () => {
   })
 
   const addCardToPlayer = (card) => {
-    socketVal.send(draw(userVal, roomVal))
+    socketVal.send(JSON.stringify(draw(userVal, roomVal)))
 
     socketVal.onmessage = (event) => {
       const cardRes = JSON.parse(event.data);
       console.log(cardRes)
-      playerCards.push(card)
-      setPlayerCards([...playerCards])
-      if (card.id === 18
-        && playerCards.findIndex((checkDiffuse) => checkDiffuse.id === 19) === -1) {
-        setIsDead(true)
+      if (cardRes.username === userVal) {
+        playerCards.push(cardRes.card)
+        setPlayerCards([...playerCards])
       }
+      // playerCards.push(card)
+      // setPlayerCards([...playerCards])
+      // if (card.id === 18
+      //   && playerCards.findIndex((checkDiffuse) => checkDiffuse.id === 19) === -1) {
+      //   setIsDead(true)
+      // }
     }
+  }
+
+  const startGame = () => {
+    socketVal.send(JSON.stringify({
+      type: 'room',
+      action: 'start',
+      roomID: roomVal,
+    }))
   }
 
   const removeCardToPlayer = (card) => {
@@ -87,9 +108,9 @@ const Game = () => {
     setPlayerCards([...playerCards])
   }
 
-  const setInitialDeck = (initialDeck) => {
-    setPlayerCards(initialDeck)
-  }
+  // const setInitialDeck = (initialDeck) => {
+  //   setPlayerCards(initialDeck)
+  // }
 
   const handleMessage = () => {
     const req = {
@@ -113,7 +134,6 @@ const Game = () => {
               isStacked={!isSorting}
               isSorting={isSorting}
               addCardToPlayer={addCardToPlayer}
-              setInitialDeck={setInitialDeck}
               closeIsSorting={() => setIsSorting(false)}
               removeCardToPlayer={removeCardToPlayer}
             />
@@ -185,7 +205,7 @@ const Game = () => {
       >
         {chatBuffer.slice(0).reverse().map((chat, index) => (
           <p
-            key={index}
+            key={index+chat.sender}
             style={{
               fontSize: '24px'
             }}
@@ -193,6 +213,27 @@ const Game = () => {
             {chat.sender}: {chat.message}
           </p>
         ))}
+      </div>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'rgba(255, 255, 255, 0.85)',
+          position: 'absolute',
+          display: started ? 'none' : 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <button
+          style={{
+            background: 'orange',
+            fontSize: '24px',
+            borderRadius: '10px',
+            padding: '10px 14px'
+          }}
+          onClick={startGame}
+        >Start Game</button>
       </div>
     </div>
   )
