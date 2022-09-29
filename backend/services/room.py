@@ -1,4 +1,5 @@
 import json, random
+from random_object_id import generate
 
 class Rooms(object):
   def __init__(self, database) -> None:
@@ -9,7 +10,8 @@ class Rooms(object):
     # Now adds in a random position the 
     index = random.sample(range(0, len(deck)), len(cards))
     for i in index:
-      deck.insert(i, cards.pop(0))
+      card = cards.pop(0)
+      deck.insert(i, )
     
     return deck
 
@@ -76,6 +78,7 @@ class Rooms(object):
     bombs = []
 
     for card in cards:
+      card['ID'] = generate()
       if (card['id'] == 19):
         array = defuses
       elif (card['id'] == 18):

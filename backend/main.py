@@ -106,10 +106,16 @@ async def gameHandler(request):
       }
 
     elif (request['action'] == 'put'):
-      roomService.leaveRoom(request['roomID'], request['username'])
+      game, _ = GAMES[request['roomID']]
+      action = game.putCard(request['username'])
       return {
         'code': 200,
+        'card': action['card'],
+        'username': action['username'],
+        'turn': action['turn'],
+        'lost': action['lost'],
       }
+
     else: raise Exception('Not valid operation')
   
   # If there is an error

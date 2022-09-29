@@ -1,7 +1,7 @@
 import itertools
 
 a = [1, 2, 3, 4, 5, 6]
-turns = itertools.cycle([1, 2, 3, 4, 5, 6])
+turns = itertools.cycle(a)
 print(next(turns))
 print(next(turns))
 print(next(turns))
