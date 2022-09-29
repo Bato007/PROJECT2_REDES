@@ -21,23 +21,12 @@ const Home = () => {
   const [userVal, setUser] = user
   const [roomVal, setRoom] = room
 
-  // Connection opened
-  socketVal.onopen = async (e) => {
-    console.log('Socket opened', e)
-    // socketVal.send(JSON.stringify({
-    //   type: "room",
-    //   action: "leave",
-    //   roomID: "ZSFBY",
-    //   username: "ZSFBY"
-    // }))
-  }
-
   socketVal.onmessage = (event) => {
     const message = JSON.parse(event.data);
     console.log(message)
     if (message.code === 404) {
       alert(message.message)
-      navigation('/')
+      navigation(0)
     } else {
       navigation('/game')
     }

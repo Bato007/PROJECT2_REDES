@@ -16,8 +16,20 @@ const App = () => {
 
   // Create WebSocket connection.
   const [socket, setSocket] = React.useState(new WebSocket('ws://localhost:8081'))
-  const [user, setUser] = React.useState('')
-  const [room, setRoom] = React.useState('')
+  const [user, setUser] = React.useState('Requete')
+  const [room, setRoom] = React.useState('ZSFBY')
+
+  
+  // Connection opened
+  socket.onopen = async (e) => {
+    console.log('Socket opened', e)
+    socket.send(JSON.stringify({
+      type: "room",
+      action: "leave",
+      roomID: "ZSFBY",
+      username: "Requete"
+    }))
+  }
 
   return (
     <Router>
