@@ -226,5 +226,9 @@ if __name__ == "__main__":
   print('[SERVER] Listening from port:', PORT)
   try:
     asyncio.run(main())
+  except:
+    print('[SERVER] Closing')
   finally:
     print('[SERVER] Cleaning server')
+    roomService.cleanRooms()
+    print('[SERVER] Server cleaned')
