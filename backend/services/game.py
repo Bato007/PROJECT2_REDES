@@ -195,7 +195,7 @@ class Game(object):
     self.lastUserDrawed = username
 
     # It's not a bomb
-    if (drawedCard != 18):
+    if (drawedCard['id'] != 18):
       self.lastCardDrawed = drawedCard
       self.currentTurn = next(self.turns)
       return {
@@ -212,10 +212,9 @@ class Game(object):
 
     # Check for defuse
     index = self.getCardIndex(userDeck, 19)
-    print(index, self.currentTurn)
+
     # User lost the game
     if (index == -1):
-      print(index, self.currentTurn)
       # Removes this user
       del self.usersDeck[username]
       self.users.remove(username)
@@ -232,7 +231,6 @@ class Game(object):
         'decksSize': self.getUserLenDeck(),
       }
 
-    print(index, self.currentTurn)
     return {
         'card': drawedCard,
         'username': username,
