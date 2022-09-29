@@ -1,4 +1,3 @@
-import socket as sk
 import websockets
 import json, asyncio
 
@@ -7,7 +6,6 @@ import mongo
 from services.room import Rooms
 from services.game import Game
 
-HOST = sk.gethostname()   # The server's hostname
 PORT = 8081               # The port used by the server
 BUFFER_SIZE = 1024
 
@@ -152,7 +150,7 @@ async def sessionHandler(websocket):
         elif (request['type'] == 'game'):
           response = await gameHandler(request, websocket)
         elif (request['type'] == 'chat'):
-          response = await chatHandler(request, websocket)
+          response = await chatHandler(request)
           broadcast(request['roomID'], response)
 
       except Exception as e:
