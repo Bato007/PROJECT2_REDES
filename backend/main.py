@@ -149,6 +149,7 @@ async def gameHandler(request):
 
       target = request['target'] if 'target' in request else None
       response = game.steal(request['username'], target)
+      response['type'] = 'game'
       response['action'] = 'steal'
 
       return response
@@ -203,6 +204,10 @@ async def sessionHandler(websocket):
           response = await chatHandler(request)
           broadcast(request['roomID'], response)
 
+      except websockets.ConnectionClosedOK as e:
+        print('[SERVER] Websocket closed', e)
+        break
+
       except Exception as e:
         print('[ERROR] MAIN ERROR:', e)
         await websocket.send(json.dumps({
@@ -212,21 +217,14 @@ async def sessionHandler(websocket):
         }))
         continue
 
-      except websockets.ConnectionClosedOK as e:
-        print('[SERVER] Websocket closed', e)
-        break
-
 async def main():
     async with websockets.serve(sessionHandler, "", PORT):
-      try:
-        await asyncio.Future()  # run forever
-      except:
-        print('ERROR WEB')
+      await asyncio.Future()  # run forever
 
 if __name__ == "__main__":
   print('[SERVER] Started')
   print('[SERVER] Listening from port:', PORT)
   try:
     asyncio.run(main())
-  except:
-    print('ERROR HERE')
+  finally:
+    print('[SERVER] Cleaning server')

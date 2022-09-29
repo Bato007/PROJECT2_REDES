@@ -5,6 +5,13 @@ class Rooms(object):
     self.collection = 'rooms'
     self.roomsDB = database[self.collection]
 
+  def cleanRooms():
+    rooms = list(self.roomsDB.find({}))
+    updated = self.roomsDB.update_one(
+        { '_id': room['_id'] },
+        { '$set': { 'users': users } }
+      )
+
   def mixCards(self, deck, cards):
     # Now adds in a random position the 
     index = random.sample(range(0, len(deck)), len(cards))
