@@ -8,7 +8,7 @@ import './list.scss'
 const List = ({ items, saveSelection }) => {
   const [selectedTarget, setSelectedItem] = useState(0)
   const handleChange = (e) => {
-    const { value } = e
+    const { value } = e.target
     setSelectedItem(value)
   }
 
@@ -20,7 +20,7 @@ const List = ({ items, saveSelection }) => {
         <div className="list-container">
           {
         items.map((item) => (
-          <div className="item-container">
+          <div className="item-container" key={item}>
             <input
               type="radio"
               id={item}

@@ -33,6 +33,15 @@ body {
 .isInTurn h3 {
   color: white;
 }
+
+.sorting-mark {
+    color: white;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 15vw;
+}
 /*
  *  STYLE 2
  */

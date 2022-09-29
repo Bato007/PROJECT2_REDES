@@ -77,9 +77,22 @@ const Game = () => {
       } else if (res.type === 'game') {
         setPlayerInTurn(res.turn)
         setPileSize(res.pileSize)
-        setCanSteal(res.steal)
 
-        if (res.steal) {
+        if (res.steal && res.turn === userVal) {
+          setCanSteal(res.steal)
+          return []
+        }
+
+        if (res.action === 'steal') {
+          if (userVal === res.target) {
+            const removeCard = playerCards.findIndex((card) => card.ID === res.card.ID)
+            playerCards.splice(removeCard, 1)
+            setPlayerCards([...playerCards])
+          }
+          if (userVal === res.turn) {
+            playerCards.push(res.card)
+            setPlayerCards([...playerCards])
+          }
           return []
         }
 
@@ -92,10 +105,12 @@ const Game = () => {
           } else if (res.card.id === 19) {
             setDefusedUsed(true)
             setDeckSize(res.pileSize)
-          } else if (res.card.id !== 18) {
-            playerCards.push(res.card)
-            setPlayerCards([...playerCards])
           }
+        }
+
+        if (res.username === userVal && res.card.id !== 18 && res.action !== 'put') {
+          playerCards.push(res.card)
+          setPlayerCards([...playerCards])
         }
 
         if (res.card.id === 18 && res.action !== 'put') {
@@ -136,8 +151,12 @@ const Game = () => {
         card: item,
       }))
       discardPile.push(item)
-
       setDiscardPile([...discardPile])
+
+      const removeCard = playerCards.findIndex((card) => card.ID === item.ID)
+      playerCards.splice(removeCard, 1)
+      setPlayerCards([...playerCards])
+
       setNeedsDefuse(false)
     },
   })
@@ -180,14 +199,15 @@ const Game = () => {
     setDefusedUsed(false)
   }
 
-  const sendTarget = (target) => {
+  const sendTarget = (name) => {
     socketVal.send(JSON.stringify({
       username: userVal,
       roomID: roomVal,
       type: 'game',
       action: 'steal',
-      target,
+      target: name,
     }))
+    setCanSteal(false)
   }
 
   return (
@@ -258,12 +278,14 @@ const Game = () => {
         }}
         onMouseDown={() => setFuture([])}
       >
+        <h2 className="sorting-mark">On top</h2>
         {future.map((item) => (
           <Card
             key={`${item.ID}`}
             card={item}
           />
         ))}
+        <h2 className="sorting-mark">On bottom</h2>
       </div>
       <div className="chat">
         <input
