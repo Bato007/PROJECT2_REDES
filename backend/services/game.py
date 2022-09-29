@@ -63,11 +63,11 @@ class Game(object):
       pass
 
 
+    # See the future
     elif (card['id'] == 22):
       see_futer = self.deck[:3]
 
       index = self.getCardIndex(self.usersDeck[username], card['id'])
-      print(index)
       self.usersDeck[username].pop(index)
       
       return {

@@ -99,6 +99,7 @@ async def gameHandler(request):
       action = game.drawCard(request['username'])
       return {
         'code': 200,
+        'type': 'game',
         'card': action['card'],
         'username': action['username'],
         'turn': action['turn'],
@@ -107,12 +108,11 @@ async def gameHandler(request):
 
     elif (request['action'] == 'put'):
       game, _ = GAMES[request['roomID']]
-      print(request['card'])
       action = game.putCard(request['username'], request['card'])
-      print(action)
 
       response = {
         'code': 200,
+        'type': 'game',
         'card': request['card'],
         'username': request['username'],
         'turn': action['turn'],
