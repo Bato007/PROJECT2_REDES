@@ -20,6 +20,11 @@ const Game = () => {
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
   const [future, setFuture] = useState([])
+  const [needsDefuse, setNeedsDefuse] = useState(false)
+  const [exploding, setExploding] = useState({})
+  const [defusedUsed, setDefusedUsed] = useState(false)
+  const [deckSize, setDeckSize] = useState(0)
+  const [deckPos, setDeckPos] = useState(0)
 
   const { socket, user, room, userA } = useContext(SocketContext)
   const [socketVal, setSocket] = socket
@@ -51,14 +56,23 @@ const Game = () => {
           setPlayerCards([...playerCards])
         }
       } else if (res.type === 'game') {
-        discardPile.push(res.card)
-        setDiscardPile([...discardPile])
+        if (res.card['id'] !== 18) {
+          discardPile.push(res.card)
+          setDiscardPile([...discardPile])
+        }
         if ('futureCards' in res && res.username === userVal) {
           setFuture([...res.futureCards])
           setTimeout(() => setFuture([]), 10000)
         }
         if (res.card['id'] === 13) {
           setPlayerInTurn(res.turn)
+        }
+        if (res.card['id'] === 19) {
+          setDefusedUsed(true)
+          setDeckSize(res.deckSize)
+        }
+        if (res.card['id'] === 18) {
+          alert(res.username, 'got an exploding kitty')
         }
       }
     }
@@ -75,6 +89,9 @@ const Game = () => {
       if (playerInTurn !== userVal) {
         return
       }
+      if (needsDefuse && item.id !== 19 || !needsDefuse && item.id === 19) {
+        return
+      }
       const removeCard = playerCards.findIndex((card) => card.index === item.index)
       playerCards.splice(removeCard, 1)
 
@@ -88,14 +105,9 @@ const Game = () => {
 
       discardPile.push(item)
 
-      // Ussing defuse card
-      if (item.id === 19
-        && playerCards.findIndex((checkExploding) => checkExploding.id === 18)) {
-        setIsSorting(true)
-      }
-
       setDiscardPile([...discardPile])
       setPlayerCards([...playerCards])
+      setNeedsDefuse(false)
     },
   })
 
@@ -114,7 +126,11 @@ const Game = () => {
           if (cardRes.lost) {
             setIsDead(true)
           } else {
-            alert('EXPLODING KITTEN')
+            if (cardRes.turn === userVal) {
+              alert('EXPLODING KITTEN!! USE YOUR DIFFUSE')
+              setNeedsDefuse(true)
+              setExploding(cardRes.card)
+            }
           }
         }
       }
@@ -259,6 +275,60 @@ const Game = () => {
           justifyContent: 'center'
         }}
       >
+      </div>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'rgba(255, 255, 255, 0.85)',
+          position: 'absolute',
+          display: !defusedUsed ? 'none' : 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <p
+          style={{
+            fontSize: '24px',
+            fontWeight: 'bold'
+          }}
+        >Inserte un numero entre 1 y {deckSize}</p>
+        <input
+          type='number'
+          min={1}
+          max={deckSize}
+          onChange={(e) => setDeckPos(e.target.value)}
+          style={{
+            background: 'rgba(255, 165, 0, 0.6)',
+            fontSize: '24px',
+            borderRadius: '12px',
+            padding: '16px',
+            marginTop: '12px'
+          }}
+        ></input>
+        <button
+          style={{
+            background: 'rgba(32, 178, 170, 0.7)',
+            marginTop: '12px',
+            fontSize: '24px',
+            padding: '16px',
+            borderRadius: '6px'
+          }}
+          onClick={() => {
+            socketVal.send(JSON.stringify({
+              username: userVal,
+              roomID: roomVal,
+              type: 'game',
+              action: 'put',
+              card: exploding,
+              target: deckPos - 1
+            }))
+            setDeckPos(0)
+            setExploding({})
+            setDefusedUsed(false)
+          }}
+        >Enviar</button>
       </div>
     </div>
   )
