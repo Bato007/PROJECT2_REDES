@@ -101,13 +101,33 @@ class Game(object):
 
     # Target Attack
     elif (card['id'] == 10):
-      card1 = self.drawCard(username)
-      card2 = self.drawCard(username)
+      cards = []
 
-      if (card1['lost'] or card2['lost']):
-        return {
+      for i in range(2):
+        result = self.drawCard(target)
 
-        }
+        # The target lost the game
+        if (result['lost'] == True):
+          result['target'] = target
+          return {
+            'card': card,
+            'username': username,
+            'target': target,
+            'turn': username,
+            'lost': True,
+          }
+        
+        cards.append(result['card'])
+    
+      return {
+        'card': card,
+        'username': username,
+        'target': target,
+        'target_cards': cards,
+        'turn': username,
+        'lost': False,
+      }
+
 
     # Skip card
     elif (card['id'] == 13):
@@ -168,17 +188,14 @@ class Game(object):
         'username': username,
         'turn': self.currentTurn,
         'lost': False,
+        'mustDefuse': False,
       }
     
     # It's a bomb
     userDeck = self.usersDeck[username]
 
     # Check for defuse
-    index = -1
-    for i in range(len(userDeck)):
-      if (userDeck[i]['id'] == 19):
-        index = i
-        break
+    index = self.getCardIndex(userDeck, 19)
     
     # User lost the game
     if (index == -1):
@@ -194,6 +211,7 @@ class Game(object):
         'username': username,
         'turn': self.currentTurn,
         'lost': True,
+        'mustDefuse': False,
       }
 
     return {
@@ -201,4 +219,5 @@ class Game(object):
         'username': username,
         'turn': username,
         'lost': False,
+        'mustDefuse': True,
       }

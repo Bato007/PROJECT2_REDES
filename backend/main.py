@@ -128,6 +128,10 @@ async def gameHandler(request):
         response['target'] = action['target'] 
       if ('deckSize' in action):
         response['deckSize'] = action['deckSize'] 
+      if ('target_cards' in action):
+        response['targetCards'] = action['target_cards'] 
+      if ('lost' in action):
+        response['lost'] = action['lost']
 
       return response
 
