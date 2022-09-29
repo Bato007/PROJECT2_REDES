@@ -1,9 +1,10 @@
 import React, { useContext, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+// eslint-disable-next-line import/no-cycle
+import { SocketContext } from '../../App'
 import title from '../../../assets/title.png'
 import Button from '../../components/button/Button'
-import { SocketContext } from '../../App'
 import './home.scss'
-import { useNavigate } from 'react-router'
 
 const Home = () => {
   const ref = useRef()
@@ -16,16 +17,23 @@ const Home = () => {
 
   const navigation = useNavigate()
 
-  const { socket, user, room, userA } = useContext(SocketContext)
-  const [socketVal, setSocket] = socket
-  const [userVal, setUser] = user
+  const {
+    socket,
+    room,
+    user,
+    userA,
+  } = useContext(SocketContext)
+  const [socketVal] = socket
   const [roomVal, setRoom] = room
-  const [userAmount, setUserAmount] = userA
+  const [, setUser] = user
+  const [, setUserAmount] = userA
 
   socketVal.onmessage = (event) => {
-    const message = JSON.parse(event.data);
+    const message = JSON.parse(event.data)
+    // eslint-disable-next-line no-console
     console.log(message)
     if (message.code === 404) {
+      // eslint-disable-next-line no-alert
       alert(message.message)
       navigation(0)
     } else {
@@ -51,8 +59,8 @@ const Home = () => {
       ref.current.value = ''
       setJoinRoomData({ ...joinRoomData })
       if (joinRoomData.username !== '') {
-        setUser(joinRoomData['username'])
-        setRoom(joinRoomData['roomID'])
+        setUser(joinRoomData.username)
+        setRoom(joinRoomData.roomID)
         socketVal.send(JSON.stringify(joinRoomData))
       }
     }

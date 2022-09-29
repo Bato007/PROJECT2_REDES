@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {
@@ -6,35 +7,45 @@ import {
 } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+// eslint-disable-next-line import/no-cycle
 import Home from './screens/Home/Home'
+// eslint-disable-next-line import/no-cycle
 import Game from './screens/Game/Game'
 import './theme.scss'
 
-export const SocketContext = React.createContext(null);
+// eslint-disable-next-line import/prefer-default-export
+export const SocketContext = React.createContext(null)
 
 const App = () => {
-
   // Create WebSocket connection.
   const [socket, setSocket] = React.useState(new WebSocket('ws://localhost:8081'))
-  const [user, setUser] = React.useState('Requete')
-  const [room, setRoom] = React.useState('ZSFBY')
+  const [user, setUser] = React.useState()
+  const [room, setRoom] = React.useState()
   const [userAmount, setUserAmount] = React.useState(0)
 
-  
   // Connection opened
   socket.onopen = async (e) => {
+    // eslint-disable-next-line no-console
     console.log('Socket opened', e)
     socket.send(JSON.stringify({
-      type: "room",
-      action: "leave",
-      roomID: "ZSFBY",
-      username: "Requete"
+      type: 'room',
+      action: 'leave',
+      roomID: 'ZSFBY',
+      username: 'asd',
     }))
   }
 
   return (
     <Router>
-      <SocketContext.Provider value={{ socket: [socket, setSocket], user: [user, setUser], room: [room, setRoom], userA: [userAmount, setUserAmount] }}>
+      <SocketContext.Provider value={
+        {
+          socket: [socket, setSocket],
+          user: [user, setUser],
+          room: [room, setRoom],
+          userA: [userAmount, setUserAmount],
+        }
+         }
+      >
         <Routes>
           <Route path="/" element={(<Home />)} />
           <Route
