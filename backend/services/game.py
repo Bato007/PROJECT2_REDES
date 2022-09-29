@@ -124,8 +124,10 @@ class Game(object):
 
       # Generates two moves
       self.currentTurn = next(self.turns)
-      for _ in range(len(self.users) - 1):
-        next(self.turns)
+
+      if (self.currentTurn != username):
+        for _ in range(len(self.users) - 1):
+          next(self.turns)
           
       return {
         'card': card,
