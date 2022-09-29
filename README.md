@@ -7,34 +7,17 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 ### Card model
 ```
 {
-  type: "card",
-  action: "draw",
-  scr: "http://link.com",
+  "id": 1,
+  "ID": "dksafj32t32klj23jk",
+  "name": "Zombie Cat",
+  "amount": 6,
+  "src": "https://storage.googleapis.com/assets_xkittens/1.jpeg"
 }
 ```
 
 ## Protocol
 
-### **1. Create Room**
-
-#### Client request
-```
-{
-  type: "room",
-  action: "create",
-  username: "test-user"
-}
-```
-
-#### Server response
-```
-{
-  code: 200,
-  roomID: "JK32I"
-}
-```
-
-### **2. Join Room**
+### **1. Join Room**
 
 #### Client request
 ```
@@ -50,43 +33,119 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 ```
 {
   code: 200,
+  'type': 'room',
   users: ['user1', 'user2', 'user3']
 }
 ```
 
-### **3. Exit Room**
+### **2. Exit Room**
 
 #### Client request
 ```
 {
   type: "room",
   action: "leave",
-  roomID: "JK32I"
+  roomID: "JK32I",
+  username: "test-user"
 }
 ```
 
 #### Server response
 ```
 {
-  code: 200
+  code: 200,
+  type: "room"
 }
 ```
 
-### **4. Start Game**
+### **3. Start Game**
 
 #### Client request
 ```
 {
   type: "room",
-  action: "start"
+  action: "start",
+  roomID: "ID"
 }
 ```
 
-#### Server response *To all users in room*
+#### Server response
 ```
 {
   code: 200,
-  pending...
+  type: "room",
+  turn: "test-user",
+  decks: { "test-user": [{Card model}]
 }
 ```
 
+### **4. Chat**
+```
+{
+  type: "chat",
+  roomID: "ID",
+  sender: "test-user",
+  message: "Test message"
+}
+```
+
+#### Server response
+```
+{
+  code: 200,
+  type: "chat",
+  roomID: "ID",
+  sender: "test-user",
+  message: "Test message"
+}
+```
+
+### **5. Draw Card**
+```
+{
+  type: "game",
+  action: "draw",
+  roomID: "ID",
+  username: "test-user"
+}
+```
+
+#### Server response
+```
+{
+  code: 200,
+  type: "game",
+  card: Card Model,
+  username: "test-user",
+  turn: "test-user2",
+  lost: False
+}
+```
+
+### **5. Put Card**
+```
+{
+  type: "game",
+  action: "put",
+  roomID: "ID",
+  username: "test-user",
+  card: Card Model,
+  target: "test-user"   # Required when attack, steal or put a bomb (this is an index, the other two are the usernames)
+}
+```
+
+#### Server response
+```
+{
+  code: 200,
+  type: "game",
+  card: Card Model,
+  username: "test-user",
+  turn: "test-user",
+  futureCards: [Card Model]   # If future card was sent
+  target: "test-user2"        # If steal this is the victim 
+  stealed: [Card Model]       # The stealed cards from the victim/target
+  deckSize: 10                # Length of the deck
+  targetCards: [Card Model]   # Attack cards
+}
+```
