@@ -42,8 +42,8 @@
 
 
 .splash-screen {
-  background: rgba(0, 0, 0, 0.60);
-  background-size: 600% 600%;
+  background: url('./../../../assets/wallpaper.png');
+  background-size: cover;
 
   position: fixed;
   width: 100%;
@@ -83,30 +83,4 @@
     @keyframes rotation {
       100% { transform: rotate(360deg); }
     }
-
-    -webkit-animation: splashscreen 4s ease infinite;
-    -moz-animation: splashscreen 4s ease infinite;
-    -o-animation: splashscreen 4s ease infinite;
-    animation: splashscreen 4s ease infinite;
-}
-
-@-webkit-keyframes splashscreen {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-@-moz-keyframes splashscreen {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-@-o-keyframes splashscreen {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-@keyframes splashscreen {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
 }

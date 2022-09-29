@@ -9,9 +9,14 @@ const CardsPlaceholder = ({
   isRow,
   isInTurn,
   userName,
+  status,
+  isPrivate,
 }) => (
   <div className={`card-placeholder-container ${isRow ? 'row' : 'column'} ${isInTurn ? 'isInTurn' : ''}`}>
-    <h3>{userName}</h3>
+    <div className="user-info-container">
+      <h3>{userName}</h3>
+      <div className={`${isPrivate ? 'private' : 'public'} ${status === 0 ? 'inactive' : ''}  ${status === 1 ? 'active' : ''}`} />
+    </div>
     {
         Array(cardsLength).fill(null).map((item, index) => (
           <Button
@@ -43,12 +48,16 @@ CardsPlaceholder.propTypes = {
   cardsLength: PropTypes.number.isRequired,
   isRow: PropTypes.bool,
   userName: PropTypes.string,
+  status: PropTypes.number,
+  isPrivate: PropTypes.bool,
 }
 
 CardsPlaceholder.defaultProps = {
   isInTurn: false,
   isRow: false,
   userName: '',
+  status: 0,
+  isPrivate: false,
 }
 
 export default CardsPlaceholder

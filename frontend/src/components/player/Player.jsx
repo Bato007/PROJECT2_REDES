@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
@@ -5,7 +7,14 @@ import Card from '../card/Card'
 import './player.scss'
 import Button from '../button/Button'
 
-const Player = ({ cards, isInTurn, isDead }) => {
+const Player = ({
+  cards,
+  isInTurn,
+  cardsLength,
+  userName,
+  status,
+  handleStatusChange,
+}) => {
   const ref = useRef()
   const navigate = useNavigate()
 
@@ -17,6 +26,10 @@ const Player = ({ cards, isInTurn, isDead }) => {
 
   return (
     <div className="player-cards">
+      <div className="user-info-container" onClick={() => handleStatusChange()}>
+        <h3>{userName}</h3>
+        <div className={`public ${status === 0 ? 'inactive' : ''}  ${status === 1 ? 'active' : ''}`} />
+      </div>
       <div className={`player-cards-container ${isInTurn ? 'isInTurn' : ''}`} ref={ref}>
         {cards.map((item) => (
           <Card
@@ -30,7 +43,7 @@ const Player = ({ cards, isInTurn, isDead }) => {
             : ''
         }
         {
-        isDead
+        !cardsLength
           ? (
             <div className="dead-popup">
               <h1>Oops! You lost</h1>
@@ -50,7 +63,7 @@ const Player = ({ cards, isInTurn, isDead }) => {
 
 Player.propTypes = {
   isInTurn: PropTypes.bool,
-  isDead: PropTypes.bool,
+  cardsLength: PropTypes.number,
   cards: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -58,12 +71,18 @@ Player.propTypes = {
       src: PropTypes.string,
     }),
   ),
+  userName: PropTypes.string,
+  status: PropTypes.number,
+  handleStatusChange: PropTypes.func,
 }
 
 Player.defaultProps = {
   cards: [],
   isInTurn: false,
-  isDead: false,
+  cardsLength: 0,
+  userName: '',
+  status: 0,
+  handleStatusChange: () => {},
 }
 
 export default Player

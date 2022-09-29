@@ -36,9 +36,6 @@
     h1 {
         color: white;
     }
-    h3 {
-        color: gray;
-    }
     img {
         opacity: 0.5;
     }
@@ -76,10 +73,10 @@
         flex-direction: row;
         transform: rotate(180deg);
         position: relative;
-        height: 6.5vw;
+        height: 5.5vw;
         margin: auto;
 
-        h3 {
+        .user-info-container {
             transform: rotate(180deg);
         }
 

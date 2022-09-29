@@ -14,7 +14,6 @@ import List from '../../components/list/List'
 
 const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
-  const [isDead, setIsDead] = useState(false)
 
   const [pileSize, setPileSize] = useState(0)
   const [discardPile, setDiscardPile] = useState([])
@@ -27,6 +26,8 @@ const Game = () => {
 
   const [roundTableDecks, setRoundDecks] = useState([])
   const [roundTable, setRoundTable] = useState(0)
+  const [roundTableStatus, setRoundTableStatus] = useState()
+
   const [future, setFuture] = useState([])
   const [needsDefuse, setNeedsDefuse] = useState(false)
   const [exploding, setExploding] = useState({})
@@ -73,6 +74,7 @@ const Game = () => {
 
           const obj = newOrder.reduce((accumulator, value) => ({ ...accumulator, [value]: 8 }), {})
           setRoundDecks(obj)
+          setRoundTableStatus(res.usersStatus)
         }
       } else if (res.type === 'game') {
         setPlayerInTurn(res.turn)
@@ -103,7 +105,6 @@ const Game = () => {
             setFuture([...res.futureCards])
             setTimeout(() => setFuture([]), 10000)
           } else if (res.card.id === 19) {
-            setDefusedUsed(true)
             setDeckSize(res.pileSize)
           }
         }
@@ -111,10 +112,6 @@ const Game = () => {
         if (res.action === 'put' && res.card.id !== 18) {
           discardPile.push(res.card)
           setDiscardPile([...discardPile])
-        }
-
-        if (res.username === userVal && res.lost) {
-          setIsDead(true)
         }
 
         if (res.username === userVal && res.card.id !== 18 && res.action !== 'put') {
@@ -130,9 +127,11 @@ const Game = () => {
             setExploding(res.card)
           } else {
             // eslint-disable-next-line no-alert
-            alert(res.turn, 'got an exploding kitty')
+            alert(`${res.turn} got an exploding kitty`)
           }
         }
+      } else if (res.type === 'status') {
+        setRoundTableStatus(res.users)
       }
     }
     return []
@@ -148,6 +147,9 @@ const Game = () => {
     drop: (item) => {
       if (playerInTurn !== userVal) {
         return
+      }
+      if ((item.id === 19 && needsDefuse)) {
+        setDefusedUsed(true)
       }
       if ((needsDefuse && item.id !== 19) || (!needsDefuse && item.id === 19)) {
         return
@@ -217,26 +219,60 @@ const Game = () => {
     setCanSteal(false)
   }
 
+  const handleChange = (e) => {
+    const { checked } = e.target
+    socketVal.send(JSON.stringify({
+      username: userVal,
+      roomID: roomVal,
+      type: 'status',
+      action: checked ? 'private' : 'public',
+      status: roundTableStatus[roundTable[0]].status,
+    }))
+  }
+
+  const handleStatusChange = () => {
+    socketVal.send(JSON.stringify({
+      username: userVal,
+      roomID: roomVal,
+      type: 'status',
+      action: roundTableStatus[roundTable[0]].isPrivate ? 'private' : 'public',
+      status: roundTableStatus[roundTable[0]].status === 0 ? 1 : 0,
+    }))
+  }
+
   return (
     <div className="game-screen">
+      <div className="toggle-privacy">
+        <label className="switch">
+          <input onChange={handleChange} type="checkbox" />
+          <span className="slider round" />
+        </label>
+        Private status
+      </div>
+
       {
-      roundTable.length === 4
+      roundTable.length === 4 && roundTableStatus
         ? (
-          <div className="decks-container">
-            <CardsPlaceholder
-              isRow
-              cardsLength={roundTableDecks[roundTable[2]]}
-              isInTurn={playerInTurn === roundTable[2]}
-              userName={roundTable[2]}
-            />
-            <div className="center-container">
+          <>
+            <div className="decks-container">
               <CardsPlaceholder
-                cardsLength={roundTableDecks[roundTable[1]]}
-                isInTurn={playerInTurn === roundTable[1]}
-                userName={roundTable[1]}
+                isRow
+                status={roundTableStatus[roundTable[2]].status}
+                isPrivate={roundTableStatus[roundTable[2]].isPrivate}
+                cardsLength={roundTableDecks[roundTable[2]]}
+                isInTurn={playerInTurn === roundTable[2]}
+                userName={roundTable[2]}
               />
-              <div className="centered-deck">
-                {
+              <div className="center-container">
+                <CardsPlaceholder
+                  status={roundTableStatus[roundTable[1]].status}
+                  isPrivate={roundTableStatus[roundTable[1]].isPrivate}
+                  cardsLength={roundTableDecks[roundTable[1]]}
+                  isInTurn={playerInTurn === roundTable[1]}
+                  userName={roundTable[1]}
+                />
+                <div className="centered-deck">
+                  {
                   pileSize > 0
                     ? (
                       <Deck
@@ -246,8 +282,8 @@ const Game = () => {
                     )
                     : <div className="empty-pile" />
                 }
-                <div className="discard-pile" ref={dropRef}>
-                  {
+                  <div className="discard-pile" ref={dropRef}>
+                    {
                   discardPile.length > 0
                     ? (
                       <Card
@@ -256,23 +292,29 @@ const Game = () => {
                     )
                     : <div className="empty-pile" />
                       }
+                  </div>
                 </div>
+                <CardsPlaceholder
+                  status={roundTableStatus[roundTable[3]].status}
+                  isPrivate={roundTableStatus[roundTable[3]].isPrivate}
+                  cardsLength={roundTableDecks[roundTable[3]]}
+                  isInTurn={playerInTurn === roundTable[3]}
+                  userName={roundTable[3]}
+                />
               </div>
-              <CardsPlaceholder
-                cardsLength={roundTableDecks[roundTable[3]]}
-                isInTurn={playerInTurn === roundTable[3]}
-                userName={roundTable[3]}
-              />
             </div>
-          </div>
+            <Player
+              handleStatusChange={() => handleStatusChange()}
+              status={roundTableStatus[roundTable[0]].status}
+              userName={roundTable[0]}
+              cards={playerCards}
+              cardsLength={roundTableDecks[roundTable[0]]}
+              isInTurn={playerInTurn === userVal}
+            />
+          </>
         )
         : <LoaderScreen />
         }
-      <Player
-        cards={playerCards}
-        isDead={isDead}
-        isInTurn={playerInTurn === userVal}
-      />
       <div
         style={{
           width: 'fit-content',
