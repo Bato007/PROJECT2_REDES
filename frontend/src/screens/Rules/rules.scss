@@ -1,0 +1,45 @@
+.rules-container {
+    position: absolute;
+    margin: auto;
+
+    width: 90%;
+    height: 90%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 5vw;
+
+    display: flex;
+    flex-direction: column;
+    padding: 5vw;
+    justify-content: center;
+    align-items: center;
+
+    h1, p {
+        color: white;
+        margin-bottom: 1vw;
+    }
+
+    p {
+        font-size: 1.2vw;
+    }
+
+    button {
+        margin-left: auto;
+    }
+
+    .bottom-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            width: 20vw;
+            height: 20vw;
+            margin-right: 3vw;
+        }
+    }
+
+}
