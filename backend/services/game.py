@@ -2,7 +2,6 @@ import itertools, random
 
 class Game(object):
   def __init__(self, roomID):
-    print(roomID)
     self.roomID = roomID
     self.deck = None
     self.users = []
@@ -38,6 +37,7 @@ class Game(object):
     self.turns = itertools.cycle(self.users)
 
   def addNewUser(self, user):
+    print(user)
     self.users.append(user)
   
   def removeUser(self, user):
@@ -45,10 +45,11 @@ class Game(object):
 
   def setGame(self, deck, deck_users):
     print(self.users)
-    self.turns = itertools.cycle(self.users)
+    self.turns = itertools.cycle(list(deck_users.keys()))
     self.deck = deck
-    self.usersDeck = deck_users
+    self.usersDeck = deck_users.copy()
     self.currentTurn = next(self.turns)
+    print(self.currentTurn)
     return self.currentTurn
 
   def putCard(self, username, card, target):

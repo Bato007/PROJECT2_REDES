@@ -51,9 +51,7 @@ class Rooms(object):
     if (username not in users): raise Exception('User is not registered') 
 
     # Gets the users and adds the new one
-    print(users)
     users.remove(username)
-    print(users)
 
     updated = self.roomsDB.update_one(
         { '_id': room['_id'] },
@@ -69,7 +67,6 @@ class Rooms(object):
     if (len(room) == 0): raise Exception('Room doesn\'t exist') 
     room = room[0]
     users = room['users'][:]
-    print(users)
 
     # Get the cards on the deck
     f = open('deck.json')
