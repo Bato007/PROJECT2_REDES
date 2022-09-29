@@ -79,7 +79,7 @@ class Game(object):
       pass
     elif (card['id'] == 19):
       
-      index = self.getCardIndex(self.usersDeck[username], card['id'])
+      self.removeCard(username, card['id'])
       pass
 
 

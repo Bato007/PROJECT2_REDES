@@ -119,7 +119,7 @@ async def gameHandler(request):
       }
 
       # Check special action
-      if (action['see_futer']):
+      if ('see_futer' in action):
         response['futureCards'] = action['see_futer'] 
 
       return response
