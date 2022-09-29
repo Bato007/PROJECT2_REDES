@@ -19,6 +19,7 @@ const Game = () => {
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
+  const [future, setFuture] = useState([])
 
   const { socket, user, room, userA } = useContext(SocketContext)
   const [socketVal, setSocket] = socket
@@ -49,6 +50,16 @@ const Game = () => {
           })
           setPlayerCards([...playerCards])
         }
+      } else if (res.type === 'game') {
+        discardPile.push(res.card)
+        setDiscardPile([...discardPile])
+        if ('futureCards' in res && res.username === userVal) {
+          setFuture([...res.futureCards])
+          setTimeout(() => setFuture([]), 10000)
+        }
+        if (res.card['id'] === 13) {
+          setPlayerInTurn(res.turn)
+        }
       }
     }
   }
@@ -61,10 +72,12 @@ const Game = () => {
       }
     },
     drop: (item) => {
+      if (playerInTurn !== userVal) {
+        return
+      }
       const removeCard = playerCards.findIndex((card) => card.index === item.index)
       playerCards.splice(removeCard, 1)
 
-      console.log(item)
       socketVal.send(JSON.stringify({
         username: userVal,
         roomID: roomVal,
@@ -105,12 +118,6 @@ const Game = () => {
           }
         }
       }
-      // playerCards.push(card)
-      // setPlayerCards([...playerCards])
-      // if (card.id === 18
-      //   && playerCards.findIndex((checkDiffuse) => checkDiffuse.id === 19) === -1) {
-      //   setIsDead(true)
-      // }
     }
   }
 
@@ -119,10 +126,6 @@ const Game = () => {
     playerCards.splice(index, 1)
     setPlayerCards([...playerCards])
   }
-
-  // const setInitialDeck = (initialDeck) => {
-  //   setPlayerCards(initialDeck)
-  // }
 
   const handleMessage = () => {
     const req = {
@@ -169,6 +172,25 @@ const Game = () => {
         isDead={isDead}
         isInTurn={playerInTurn === userVal}
       />
+      <div
+        style={{
+          width: 'calc(30vw + 212px)',
+          position: 'absolute',
+          padding: '90px',
+          background: 'rgba(0, 0, 0, 0.7)',
+          display: future.length > 0 ? 'flex' : 'none',
+          columnGap: '16px',
+          borderRadius: '25px'
+        }}
+        onMouseDown={() => setFuture([])}
+      >
+        {future.map((item) => (
+          <Card
+            key={`${item.ID}`}
+            card={item}
+          />
+        ))}
+      </div>
       <div style={{
         display: 'flex',
         width: '100%',
