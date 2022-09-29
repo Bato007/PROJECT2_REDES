@@ -18,3 +18,17 @@ class Game(object):
     self.deck = deck
     self.usersDeck = deck_users
     return next(self.turns)
+
+  # Gets a new card of the deck
+  def drawCard(self, username):
+    drawedCard = self.deck.pop(0)
+
+    if (drawedCard != 18):
+      self.usersDeck[username].append(drawedCard)
+      return {
+        'card': drawedCard,
+        'username': username,
+        'turn': next(self.turns),
+      }
+
+    print('holaaa')

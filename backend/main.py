@@ -93,23 +93,21 @@ async def roomHandler(request, websocket):
 
 async def gameHandler(request):
   try:
-    # Creates a new room
-    if (request['action'] == 'join'):
-      users = roomService.joinRoom(request['roomID'], request['username'])
+    # Draws a card from the deck
+    if (request['action'] == 'draw'):
+      game, _ = GAMES[request['roomID']]
+      action = game.drawCard(request['username'])
       return {
         'code': 200,
-        'users': users,
+        'card': action['card'],
+        'username': action['username'],
+        'turn': action['turn'],
       }
-    elif (request['action'] == 'leave'):
+
+    elif (request['action'] == 'put'):
       roomService.leaveRoom(request['roomID'], request['username'])
       return {
         'code': 200,
-      }
-    elif (request['action'] == 'start'):
-      decks = roomService.startRoom(request['roomID'])
-      return {
-        'code': 200,
-        'deck': decks[0],
       }
     else: raise Exception('Not valid operation')
   
@@ -119,6 +117,7 @@ async def gameHandler(request):
     return {
         'code': 404,
         'message': str(e),
+        'type': 'error',
       }
 
 async def chatHandler(request):
@@ -154,7 +153,8 @@ async def sessionHandler(websocket):
           response = await roomHandler(request, websocket)
           broadcast(request['roomID'], response)
         elif (request['type'] == 'game'):
-          response = await gameHandler(request, websocket)
+          response = await gameHandler(request)
+          broadcast(request['roomID'], response)
         elif (request['type'] == 'chat'):
           response = await chatHandler(request)
           broadcast(request['roomID'], response)
