@@ -27,12 +27,6 @@ const App = () => {
   socket.onopen = async (e) => {
     // eslint-disable-next-line no-console
     console.log('Socket opened', e)
-    socket.send(JSON.stringify({
-      type: 'room',
-      action: 'leave',
-      roomID: 'ZSFBY',
-      username: 'asd',
-    }))
   }
 
   return (

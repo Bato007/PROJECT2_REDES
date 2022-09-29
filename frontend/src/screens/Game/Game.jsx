@@ -5,7 +5,6 @@ import { useDrop } from 'react-dnd'
 import Card from '../../components/card/Card'
 import CardsPlaceholder from '../../components/card/CardPlaceholder'
 import { SocketContext } from '../../App'
-import { draw } from '../../Utils/objects'
 
 import Deck from '../../components/card/Deck'
 import Player from '../../components/player/Player'
@@ -16,8 +15,7 @@ const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
   const [isDead, setIsDead] = useState(false)
   const [discardPile, setDiscardPile] = useState([])
-  const [isSorting, setIsSorting] = useState(false)
-  // eslint-disable-next-line no-unused-vars
+
   const [playerInTurn, setPlayerInTurn] = useState('')
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
@@ -27,7 +25,6 @@ const Game = () => {
   const [exploding, setExploding] = useState({})
   const [defusedUsed, setDefusedUsed] = useState(false)
   const [deckSize, setDeckSize] = useState(0)
-  const [deckPos, setDeckPos] = useState(0)
 
   const {
     socket, user, room, userA,
@@ -41,6 +38,8 @@ const Game = () => {
   clearTimeout(setChatFalse)
   socketVal.onmessage = (event) => {
     const res = JSON.parse(event.data)
+    // eslint-disable-next-line no-console
+    console.log('res in GAME', res)
     if (res.type !== 'ERROR') {
       if (res.type === 'chat') {
         setNewChat(true)
@@ -51,7 +50,6 @@ const Game = () => {
         setChatFalse = setTimeout(() => setNewChat(false), 5000)
       } else if (res.type === 'room') {
         if ('decks' in res) {
-          // Object.keys(res.decks).length // Amount of players
           setUserAmount(4)
           setPlayerInTurn(res.turn)
           res.decks[userVal].forEach((card) => {
@@ -60,23 +58,35 @@ const Game = () => {
           setPlayerCards([...playerCards])
         }
       } else if (res.type === 'game') {
-        if (res.card.id !== 18) {
-          discardPile.push(res.card)
-          setDiscardPile([...discardPile])
-        }
-        if ('futureCards' in res && res.username === userVal) {
-          setFuture([...res.futureCards])
-          setTimeout(() => setFuture([]), 10000)
-        }
-        if (res.card.id === 13) {
+        if (res.turn === userVal || res.card.id === 13) {
           setPlayerInTurn(res.turn)
         }
-        if (res.card.id === 19) {
-          setDefusedUsed(true)
-          setDeckSize(res.deckSize)
+
+        if (res.turn === userVal) {
+          if (res.lost) {
+            setIsDead(true)
+          } else if ('futureCards' in res) {
+            setFuture([...res.futureCards])
+            setTimeout(() => setFuture([]), 10000)
+          } else if (res.card.id === 19) {
+            setDefusedUsed(true)
+            setDeckSize(res.deckSize)
+          } else if (res.card.id !== 18) {
+            playerCards.push(res.card)
+            setPlayerCards([...playerCards])
+          }
         }
+
         if (res.card.id === 18) {
-          alert(res.username, 'got an exploding kitty')
+          if (res.turn === userVal) {
+            // eslint-disable-next-line no-alert
+            alert('EXPLODING KITTEN!! USE YOUR DIFFUSE')
+            setNeedsDefuse(true)
+            setExploding(res.card)
+          } else {
+            // eslint-disable-next-line no-alert
+            alert(res.turn, 'got an exploding kitty')
+          }
         }
       }
     }
@@ -116,31 +126,14 @@ const Game = () => {
   })
 
   const addCardToPlayer = () => {
-    socketVal.send(JSON.stringify(draw(userVal, roomVal)))
-
-    socketVal.onmessage = (event) => {
-      const cardRes = JSON.parse(event.data)
-      console.log(cardRes)
-      if (cardRes.username === userVal) {
-        setPlayerInTurn(cardRes.turn)
-        if (cardRes.card.id !== 18) {
-          playerCards.push(cardRes.card)
-          setPlayerCards([...playerCards])
-        } else if (cardRes.lost) {
-          setIsDead(true)
-        } else if (cardRes.turn === userVal) {
-          alert('EXPLODING KITTEN!! USE YOUR DIFFUSE')
-          setNeedsDefuse(true)
-          setExploding(cardRes.card)
-        }
-      }
-    }
-  }
-
-  const removeCardToPlayer = (card) => {
-    const index = playerCards.findIndex((checkDiffuse) => checkDiffuse.id === card.id)
-    playerCards.splice(index, 1)
-    setPlayerCards([...playerCards])
+    socketVal.send(JSON.stringify(
+      {
+        type: 'game',
+        action: 'draw',
+        username: userVal,
+        roomID: roomVal,
+      },
+    ))
   }
 
   const handleMessage = () => {
@@ -154,6 +147,19 @@ const Game = () => {
     setChatMessage('')
   }
 
+  const stopIsSorting = (deckPos) => {
+    socketVal.send(JSON.stringify({
+      username: userVal,
+      roomID: roomVal,
+      type: 'game',
+      action: 'put',
+      card: exploding,
+      target: deckPos,
+    }))
+    setExploding({})
+    setDefusedUsed(false)
+  }
+
   return (
     <div className="game-screen">
       <div className="decks-container">
@@ -162,11 +168,8 @@ const Game = () => {
           <CardsPlaceholder cardsLength={0} isInTurn={playerInTurn === 3} />
           <div className="centered-deck">
             <Deck
-              isStacked={!isSorting}
-              isSorting={isSorting}
+              isStacked
               addCardToPlayer={addCardToPlayer}
-              closeIsSorting={() => setIsSorting(false)}
-              removeCardToPlayer={removeCardToPlayer}
             />
             <div className="discard-pile" ref={dropRef}>
               {
@@ -274,69 +277,11 @@ const Game = () => {
         userAmount !== 4
           ? <LoaderScreen /> : ''
       }
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          background: 'rgba(255, 255, 255, 0.85)',
-          position: 'absolute',
-          display: !defusedUsed ? 'none' : 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <p
-          style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-          }}
-        >
-          Inserte un numero entre 1 y
-          {' '}
-          {deckSize}
-
-        </p>
-        <input
-          type="number"
-          min={1}
-          max={deckSize}
-          onChange={(e) => setDeckPos(e.target.value)}
-          style={{
-            background: 'rgba(255, 165, 0, 0.6)',
-            fontSize: '24px',
-            borderRadius: '12px',
-            padding: '16px',
-            marginTop: '12px',
-          }}
-        />
-        <button
-          style={{
-            background: 'rgba(32, 178, 170, 0.7)',
-            marginTop: '12px',
-            fontSize: '24px',
-            padding: '16px',
-            borderRadius: '6px',
-          }}
-          type="button"
-          onClick={() => {
-            socketVal.send(JSON.stringify({
-              username: userVal,
-              roomID: roomVal,
-              type: 'game',
-              action: 'put',
-              card: exploding,
-              target: deckPos - 1,
-            }))
-            setDeckPos(0)
-            setExploding({})
-            setDefusedUsed(false)
-          }}
-        >
-          Enviar
-
-        </button>
-      </div>
+      {
+        defusedUsed
+          ? <Deck deckLength={deckSize} closeIsSorting={stopIsSorting} />
+          : ''
+      }
     </div>
   )
 }

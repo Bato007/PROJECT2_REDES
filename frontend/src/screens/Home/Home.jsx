@@ -31,7 +31,7 @@ const Home = () => {
   socketVal.onmessage = (event) => {
     const message = JSON.parse(event.data)
     // eslint-disable-next-line no-console
-    console.log(message)
+    console.log('message in HOME', message)
     if (message.code === 404) {
       // eslint-disable-next-line no-alert
       alert(message.message)
@@ -60,6 +60,8 @@ const Home = () => {
       setJoinRoomData({ ...joinRoomData })
       if (joinRoomData.username !== '') {
         setUser(joinRoomData.username)
+        // eslint-disable-next-line no-console
+        console.log('saving user with....', joinRoomData.username)
         setRoom(joinRoomData.roomID)
         socketVal.send(JSON.stringify(joinRoomData))
       }
