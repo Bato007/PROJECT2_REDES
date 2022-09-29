@@ -30,6 +30,8 @@ class Users(object):
         'status': user['status'],
         'isPrivate': user['isPrivate'],
       }
+    
+    return theStatus
 
   def updatePublicStatus(self, username, roomID, status):
     self.userDB.update_one(
