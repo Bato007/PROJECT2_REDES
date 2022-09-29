@@ -179,6 +179,7 @@ const Game = () => {
           bottom: '55px',
           padding: '16px',
           borderRadius: '25px',
+          pointerEvents: 'none',
           display: newChat ? 'block' : 'none'
         }}
       >
