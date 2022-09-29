@@ -44,6 +44,7 @@ async def roomHandler(request, websocket):
 
       return {
         'code': 200,
+        'type': 'room',
         'users': users,
       }
 
@@ -62,6 +63,7 @@ async def roomHandler(request, websocket):
 
       return {
         'code': 200,
+        'type': 'room',
       }
 
     elif (request['action'] == 'start'):
@@ -76,6 +78,7 @@ async def roomHandler(request, websocket):
         'code': 200,
         'decks': decks['player_deck'],
         'turn': turn,
+        'type': 'room',
       }
     else: raise Exception('Not valid operation')
   
@@ -85,6 +88,7 @@ async def roomHandler(request, websocket):
     return {
         'code': 404,
         'message': str(e),
+        'type': 'error',
       }
 
 async def gameHandler(request):
@@ -122,6 +126,7 @@ async def chatHandler(request):
     # Creates a new message
     return {
       'code': 200,
+      'type': 'chat',
       'roomID': request['roomID'],
       'sender': request['username'],
       'message': request['message'],
@@ -132,6 +137,7 @@ async def chatHandler(request):
     print('[ERROR] ON CHAT:', e)
     return {
         'code': 404,
+        'type': 'error',
         'message': str(e),
       }
 
@@ -155,7 +161,11 @@ async def sessionHandler(websocket):
 
       except Exception as e:
         print('[ERROR] MAIN ERROR:', e)
-        await websocket.send('ERROR')
+        await websocket.send(json.dumps({
+          'code': 404,
+          'type': 'error',
+          'message': 'Unexpected '
+        }))
         continue
 
       except websockets.ConnectionClosedOK as e:
