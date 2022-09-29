@@ -129,3 +129,5 @@ const cat = (user, target, roomId) => {
     }
   )
 }
+
+export { draw, defuse, shuffle, attack, skip, future, cat }

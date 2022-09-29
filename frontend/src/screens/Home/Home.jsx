@@ -3,6 +3,7 @@ import title from '../../../assets/title.png'
 import Button from '../../components/button/Button'
 import { SocketContext } from '../../App'
 import './home.scss'
+import { useNavigate } from 'react-router'
 
 const Home = () => {
   const ref = useRef()
@@ -13,15 +14,22 @@ const Home = () => {
     roomID: '',
   })
 
-  const socket = useContext(SocketContext)
+  const navigation = useNavigate()
 
-  // Connection opened
-  socket.onopen = async (e) => {
-    console.log('Socket opened', e)
-  }
+  const { socket, user, room } = useContext(SocketContext)
+  const [socketVal, setSocket] = socket
+  const [userVal, setUser] = user
+  const [roomVal, setRoom] = room
 
-  socket.onmessage = (event) => {
-    console.log(event.data)
+  socketVal.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    console.log(message)
+    if (message.code === 404) {
+      alert(message.message)
+      navigation(0)
+    } else {
+      navigation('/game')
+    }
   }
 
   const checkData = (e, name) => {
@@ -30,7 +38,9 @@ const Home = () => {
       ref.current.value = ''
       setJoinRoomData({ ...joinRoomData })
       if (joinRoomData.username !== '') {
-        socket.send(JSON.stringify(joinRoomData))
+        setUser(joinRoomData['username'])
+        setRoom(joinRoomData['roomID'])
+        socketVal.send(JSON.stringify(joinRoomData))
       }
     }
   }
