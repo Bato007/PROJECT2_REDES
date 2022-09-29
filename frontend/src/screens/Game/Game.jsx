@@ -15,6 +15,7 @@ import List from '../../components/list/List'
 const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
 
+  const [winner, setWinner] = useState()
   const [pileSize, setPileSize] = useState(0)
   const [discardPile, setDiscardPile] = useState([])
 
@@ -86,6 +87,10 @@ const Game = () => {
           setCanSteal(res.steal)
           return []
         }
+        if (res.winner) {
+          setWinner(res.winner)
+          return []
+        }
 
         if (res.action === 'steal' && res.card) {
           if (userVal === res.target) {
@@ -120,14 +125,14 @@ const Game = () => {
         }
 
         if (res.card.id === 18 && res.action !== 'put') {
-          if (res.turn === userVal) {
+          if (res.username === userVal) {
             // eslint-disable-next-line no-alert
             alert('EXPLODING KITTEN!! USE YOUR DIFFUSE')
             setNeedsDefuse(true)
             setExploding(res.card)
           } else {
             // eslint-disable-next-line no-alert
-            alert(`${res.turn} got an exploding kitty`)
+            alert(`${res.username} got an exploding kitty`)
           }
         }
       } else if (res.type === 'status') {
@@ -382,6 +387,19 @@ const Game = () => {
                 : []}
               saveSelection={sendTarget}
             />
+          )
+          : ''
+      }
+      {
+        winner
+          ? (
+            <div className="winner-screen">
+              <h1>
+                {winner}
+                {' '}
+                won!
+              </h1>
+            </div>
           )
           : ''
       }
