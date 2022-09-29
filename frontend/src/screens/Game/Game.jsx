@@ -15,7 +15,7 @@ const Game = () => {
   const [discardPile, setDiscardPile] = useState([])
   const [isSorting, setIsSorting] = useState(false)
   // eslint-disable-next-line no-unused-vars
-  const [playerInTurn, setPlayerInTurn] = useState(2)
+  const [playerInTurn, setPlayerInTurn] = useState('')
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
@@ -43,6 +43,7 @@ const Game = () => {
         if ('decks' in res) {
           Object.keys(res.decks).length // Amount of players
           setUserAmount(4)
+          setPlayerInTurn(res.turn)
           res.decks[userVal].forEach((card) => {
             playerCards.push(card)
           })
@@ -62,6 +63,15 @@ const Game = () => {
     drop: (item) => {
       const removeCard = playerCards.findIndex((card) => card.index === item.index)
       playerCards.splice(removeCard, 1)
+
+      console.log(item)
+      socketVal.send(JSON.stringify({
+        username: userVal,
+        roomID: roomVal,
+        type: 'game',
+        action: 'put',
+        card: item
+      }))
 
       discardPile.push(item)
 
@@ -83,8 +93,17 @@ const Game = () => {
       const cardRes = JSON.parse(event.data);
       console.log(cardRes)
       if (cardRes.username === userVal) {
-        playerCards.push(cardRes.card)
-        setPlayerCards([...playerCards])
+        setPlayerInTurn(cardRes.turn)
+        if (cardRes.card['id'] !== 18) {
+          playerCards.push(cardRes.card)
+          setPlayerCards([...playerCards]) 
+        } else {
+          if (cardRes.lost) {
+            setIsDead(true)
+          } else {
+            alert('EXPLODING KITTEN')
+          }
+        }
       }
       // playerCards.push(card)
       // setPlayerCards([...playerCards])
@@ -148,7 +167,7 @@ const Game = () => {
       <Player
         cards={playerCards}
         isDead={isDead}
-        isInTurn={playerInTurn === 2}
+        isInTurn={playerInTurn === userVal}
       />
       <div style={{
         display: 'flex',
