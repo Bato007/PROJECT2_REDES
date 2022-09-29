@@ -50,7 +50,8 @@ class Game(object):
     self.users.remove(user)
 
   def setGame(self, deck, deck_users):
-    self.turns = itertools.cycle(list(deck_users.keys()))
+    self.users = list(deck_users.keys())[:]
+    self.turns = itertools.cycle(self.users)
     self.deck = deck
     self.usersDeck = deck_users.copy()
     self.currentTurn = next(self.turns)

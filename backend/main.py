@@ -77,6 +77,7 @@ async def roomHandler(request, websocket):
       return {
         'code': 200,
         'decks': decks['player_deck'],
+        'users': game.users,
         'turn': turn,
         'type': 'room',
       }
