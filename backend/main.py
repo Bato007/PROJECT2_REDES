@@ -15,14 +15,6 @@ GAMES = {}
 database = mongo.connect()
 roomService = Rooms(database)
 
-def sendError(websocket, response):
-  try:
-    _, connected = GAMES[roomID]
-    print('[SERVER] Sending to', _.roomID, ':', response)
-    websockets.broadcast(connected, json.dumps(response))
-  except Exception as e:
-    print('[ERROR] SEND ENRROR:', e)
-
 def broadcast(roomID, response):
   try:
     _, connected = GAMES[roomID]
@@ -30,15 +22,6 @@ def broadcast(roomID, response):
     websockets.broadcast(connected, json.dumps(response))
   except Exception as e:
     print('[ERROR] BROADCAST:', e)
-
-def sendMessage(websocket, roomID, response):
-  try:
-    if (response['type'] == 'error'):
-      sendError(websocket, response)
-    else:
-      broadcast(roomID, response)
-  except Exception as e:
-    print('[ERROR] SEND:', e)
 
 async def roomHandler(request, websocket):
   try:
@@ -213,13 +196,22 @@ async def sessionHandler(websocket):
         # Check the request type
         if (request['type'] == 'room'):
           response = await roomHandler(request, websocket)
-          sendMessage(websocket, request['roomID'], response)
+          
+          if (response['type'] == 'error'): raise Exception(response['message'])
+
+          broadcast(request['roomID'], response)
         elif (request['type'] == 'game'):
           response = await gameHandler(request)
-          sendMessage(websocket, request['roomID'], response)
+
+          if (response['type'] == 'error'): raise Exception(response['message'])
+
+          broadcast(request['roomID'], response)
         elif (request['type'] == 'chat'):
           response = await chatHandler(request)
-          sendMessage(websocket, request['roomID'], response)
+
+          if (response['type'] == 'error'): raise Exception(response['message'])
+
+          broadcast(request['roomID'], response)
 
       except websockets.ConnectionClosedOK as e:
         print('[SERVER] Websocket closed', e)
@@ -230,7 +222,7 @@ async def sessionHandler(websocket):
         await websocket.send(json.dumps({
           'code': 404,
           'type': 'error',
-          'message': 'Unexpected '
+          'message': str(e)
         }))
         continue
 
