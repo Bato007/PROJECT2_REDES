@@ -57,7 +57,7 @@ class Game(object):
 
       # Check if can steal
       if (
-        (self.lastCardPut['id'] == card['id']) and (self.lastUserPut == username)
+        (self.lastCardPut['id'] in stealCards) and (self.lastUserPut == username)
       ):
         # Steal to target
         victim_deck = self.usersDeck[target]
@@ -217,7 +217,7 @@ class Game(object):
     return {
         'card': drawedCard,
         'username': username,
-        'turn': username,
+        'turn': self.currentTurn,
         'lost': False,
         'mustDefuse': True,
       }

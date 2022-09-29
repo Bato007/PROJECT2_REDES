@@ -51,7 +51,9 @@ class Rooms(object):
     if (username not in users): raise Exception('User is not registered') 
 
     # Gets the users and adds the new one
+    print(users)
     users.remove(username)
+    print(users)
 
     updated = self.roomsDB.update_one(
         { '_id': room['_id'] },
