@@ -70,6 +70,9 @@ async def roomHandler(request, websocket):
 
     elif (request['action'] == 'start'):
       decks = roomService.startRoom(request['roomID'])
+      response = userService.getAllUsers(
+        request['roomID']
+      )
       
       # Start new game
       game, connected = GAMES[request['roomID']]
@@ -83,6 +86,7 @@ async def roomHandler(request, websocket):
         'turn': turn,
         'pileSize': len(decks['deck']),
         'type': 'room',
+        'usersStatus': response,
       }
 
     else: raise Exception('Not valid operation')
