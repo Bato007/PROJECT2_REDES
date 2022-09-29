@@ -14,12 +14,17 @@ import LoaderScreen from '../../components/loader/LoaderScreen'
 const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
   const [isDead, setIsDead] = useState(false)
+
+  const [pileSize, setPileSize] = useState(0)
   const [discardPile, setDiscardPile] = useState([])
 
   const [playerInTurn, setPlayerInTurn] = useState('')
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
+
+  const [roundTableDecks, setRoundDecks] = useState([])
+  const [roundTable, setRoundTable] = useState(0)
   const [future, setFuture] = useState([])
   const [needsDefuse, setNeedsDefuse] = useState(false)
   const [exploding, setExploding] = useState({})
@@ -27,12 +32,11 @@ const Game = () => {
   const [deckSize, setDeckSize] = useState(0)
 
   const {
-    socket, user, room, userA,
+    socket, user, room,
   } = useContext(SocketContext)
   const [socketVal] = socket
   const [userVal] = user
   const [roomVal] = room
-  const [userAmount, setUserAmount] = userA
 
   let setChatFalse = setTimeout(() => setNewChat(false), 5000)
   clearTimeout(setChatFalse)
@@ -50,17 +54,29 @@ const Game = () => {
         setChatFalse = setTimeout(() => setNewChat(false), 5000)
       } else if (res.type === 'room') {
         if ('decks' in res) {
-          setUserAmount(4)
           setPlayerInTurn(res.turn)
           res.decks[userVal].forEach((card) => {
             playerCards.push(card)
           })
           setPlayerCards([...playerCards])
+          setDiscardPile(res.pileSize)
+          setPileSize(res.pileSize)
+        }
+        if (res.users) {
+          const users = [...res.users]
+          const nextOfMe = users.splice(users.indexOf(userVal))
+          const beforeMe = users
+
+          const newOrder = nextOfMe.concat(beforeMe)
+          setRoundTable(newOrder)
+
+          const obj = newOrder.reduce((accumulator, value) => ({ ...accumulator, [value]: 8 }), {})
+          setRoundDecks(obj)
         }
       } else if (res.type === 'game') {
-        if (res.turn === userVal || res.card.id === 13) {
-          setPlayerInTurn(res.turn)
-        }
+        setDiscardPile(res.pileSize)
+        setPlayerInTurn(res.turn)
+        setPileSize(res.pileSize)
 
         if (res.turn === userVal) {
           if (res.lost) {
@@ -70,14 +86,14 @@ const Game = () => {
             setTimeout(() => setFuture([]), 10000)
           } else if (res.card.id === 19) {
             setDefusedUsed(true)
-            setDeckSize(res.deckSize)
+            setDeckSize(res.pileSize)
           } else if (res.card.id !== 18) {
             playerCards.push(res.card)
             setPlayerCards([...playerCards])
           }
         }
 
-        if (res.card.id === 18) {
+        if (res.card.id === 18 && res.type !== 'put') {
           if (res.turn === userVal) {
             // eslint-disable-next-line no-alert
             alert('EXPLODING KITTEN!! USE YOUR DIFFUSE')
@@ -106,9 +122,6 @@ const Game = () => {
       if ((needsDefuse && item.id !== 19) || (!needsDefuse && item.id === 19)) {
         return
       }
-      const removeCard = playerCards.findIndex((card) => card.index === item.index)
-      playerCards.splice(removeCard, 1)
-
       socketVal.send(JSON.stringify({
         username: userVal,
         roomID: roomVal,
@@ -116,11 +129,9 @@ const Game = () => {
         action: 'put',
         card: item,
       }))
-
       discardPile.push(item)
 
       setDiscardPile([...discardPile])
-      setPlayerCards([...playerCards])
       setNeedsDefuse(false)
     },
   })
@@ -162,30 +173,55 @@ const Game = () => {
 
   return (
     <div className="game-screen">
-      <div className="decks-container">
-        <CardsPlaceholder isDead cardsLength={15} isRow isInTurn={playerInTurn === 0} />
-        <div className="center-container">
-          <CardsPlaceholder cardsLength={0} isInTurn={playerInTurn === 3} />
-          <div className="centered-deck">
-            <Deck
-              isStacked
-              addCardToPlayer={addCardToPlayer}
+      {
+      roundTable.length === 4
+        ? (
+          <div className="decks-container">
+            <CardsPlaceholder
+              isRow
+              cardsLength={roundTableDecks[roundTable[2]]}
+              isInTurn={playerInTurn === roundTable[2]}
+              userName={roundTable[2]}
             />
-            <div className="discard-pile" ref={dropRef}>
-              {
-          discardPile.length > 0
-            ? (
-              <Card
-                card={discardPile.at(-1)}
+            <div className="center-container">
+              <CardsPlaceholder
+                cardsLength={roundTableDecks[roundTable[1]]}
+                isInTurn={playerInTurn === roundTable[1]}
+                userName={roundTable[1]}
               />
-            )
-            : <div className="empty-pile" />
-              }
+              <div className="centered-deck">
+                {
+                  pileSize > 0
+                    ? (
+                      <Deck
+                        isStacked
+                        addCardToPlayer={addCardToPlayer}
+                      />
+                    )
+                    : <div className="empty-pile" />
+                }
+                <div className="discard-pile" ref={dropRef}>
+                  {
+                  discardPile.length > 0 > 0
+                    ? (
+                      <Card
+                        card={discardPile.at(-1)}
+                      />
+                    )
+                    : <div className="empty-pile" />
+                      }
+                </div>
+              </div>
+              <CardsPlaceholder
+                cardsLength={roundTableDecks[roundTable[3]]}
+                isInTurn={playerInTurn === roundTable[3]}
+                userName={roundTable[3]}
+              />
             </div>
           </div>
-          <CardsPlaceholder cardsLength={7} isInTurn={playerInTurn === 1} />
-        </div>
-      </div>
+        )
+        : <LoaderScreen />
+        }
       <Player
         cards={playerCards}
         isDead={isDead}
@@ -210,35 +246,14 @@ const Game = () => {
           />
         ))}
       </div>
-      <div style={{
-        display: 'flex',
-        width: '100%',
-        height: '55px',
-        paddingLeft: '48px',
-        paddingRight: '48px',
-        fontSize: '24px',
-      }}
-      >
+      <div className="chat">
         <input
           type="text"
           value={chatMessage}
           onChange={(e) => setChatMessage(e.target.value)}
-          style={{
-            background: 'white',
-            flexGrow: '1',
-            fontSize: '24px',
-            borderRadius: '25px',
-            padding: '10px 14px',
-          }}
         />
         <button
           type="button"
-          style={{
-            background: chatMessage === '' ? 'gray' : 'orange',
-            fontSize: '24px',
-            borderRadius: '10px',
-            padding: '10px 14px',
-          }}
           disabled={chatMessage === ''}
           onClick={handleMessage}
         >
@@ -246,15 +261,8 @@ const Game = () => {
         </button>
       </div>
       <div
+        className="full-chat"
         style={{
-          position: 'absolute',
-          background: 'rgba(255, 255, 255, 0.65)',
-          width: 'calc(100% - 96px)',
-          height: '250px',
-          bottom: '55px',
-          padding: '16px',
-          borderRadius: '25px',
-          pointerEvents: 'none',
           display: newChat ? 'block' : 'none',
         }}
       >
@@ -262,9 +270,6 @@ const Game = () => {
           <p
             // eslint-disable-next-line react/no-array-index-key
             key={index + chat.sender}
-            style={{
-              fontSize: '24px',
-            }}
           >
             {chat.sender}
             :
@@ -273,10 +278,6 @@ const Game = () => {
           </p>
         ))}
       </div>
-      {
-        userAmount !== 4
-          ? <LoaderScreen /> : ''
-      }
       {
         defusedUsed
           ? <Deck deckLength={deckSize} closeIsSorting={stopIsSorting} />

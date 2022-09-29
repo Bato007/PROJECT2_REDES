@@ -8,9 +8,10 @@ const CardsPlaceholder = ({
   cardsLength,
   isRow,
   isInTurn,
-  isDead,
+  userName,
 }) => (
   <div className={`card-placeholder-container ${isRow ? 'row' : 'column'} ${isInTurn ? 'isInTurn' : ''}`}>
+    <h3>{userName}</h3>
     {
         Array(cardsLength).fill(null).map((item, index) => (
           <Button
@@ -26,7 +27,7 @@ const CardsPlaceholder = ({
         ? <div className="empty-pile" /> : ''
     }
     {
-      isDead
+      !cardsLength
         ? (
           <div className="dead-popup">
             <h1>Lost</h1>
@@ -41,13 +42,13 @@ CardsPlaceholder.propTypes = {
   isInTurn: PropTypes.bool,
   cardsLength: PropTypes.number.isRequired,
   isRow: PropTypes.bool,
-  isDead: PropTypes.bool,
+  userName: PropTypes.string,
 }
 
 CardsPlaceholder.defaultProps = {
   isInTurn: false,
   isRow: false,
-  isDead: false,
+  userName: '',
 }
 
 export default CardsPlaceholder

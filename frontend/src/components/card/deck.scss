@@ -45,6 +45,9 @@
     h1 {
         color: white;
     }
+    h3 {
+        color: gray;
+    }
     img {
         opacity: 0.5;
     }
@@ -84,6 +87,10 @@
         position: relative;
         height: 6.5vw;
         margin: auto;
+
+        h3 {
+            transform: rotate(180deg);
+        }
 
         .card {
             flex: 1 0 0;
