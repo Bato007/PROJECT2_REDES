@@ -10,6 +10,7 @@ import Deck from '../../components/card/Deck'
 import Player from '../../components/player/Player'
 import './game.scss'
 import LoaderScreen from '../../components/loader/LoaderScreen'
+import List from '../../components/list/List'
 
 const Game = () => {
   const [playerCards, setPlayerCards] = useState([])
@@ -22,6 +23,7 @@ const Game = () => {
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
+  const [canSteal, setCanSteal] = useState(false)
 
   const [roundTableDecks, setRoundDecks] = useState([])
   const [roundTable, setRoundTable] = useState(0)
@@ -59,7 +61,6 @@ const Game = () => {
             playerCards.push(card)
           })
           setPlayerCards([...playerCards])
-          setDiscardPile(res.pileSize)
           setPileSize(res.pileSize)
         }
         if (res.users) {
@@ -74,9 +75,13 @@ const Game = () => {
           setRoundDecks(obj)
         }
       } else if (res.type === 'game') {
-        setDiscardPile(res.pileSize)
         setPlayerInTurn(res.turn)
         setPileSize(res.pileSize)
+        setCanSteal(res.steal)
+
+        if (res.steal) {
+          return []
+        }
 
         if (res.turn === userVal) {
           if (res.lost) {
@@ -106,6 +111,7 @@ const Game = () => {
         }
       }
     }
+    return []
   }
 
   const [, dropRef] = useDrop({
@@ -137,6 +143,9 @@ const Game = () => {
   })
 
   const addCardToPlayer = () => {
+    if (playerInTurn !== userVal) {
+      return
+    }
     socketVal.send(JSON.stringify(
       {
         type: 'game',
@@ -169,6 +178,16 @@ const Game = () => {
     }))
     setExploding({})
     setDefusedUsed(false)
+  }
+
+  const sendTarget = (target) => {
+    socketVal.send(JSON.stringify({
+      username: userVal,
+      roomID: roomVal,
+      type: 'game',
+      action: 'steal',
+      target,
+    }))
   }
 
   return (
@@ -281,6 +300,18 @@ const Game = () => {
       {
         defusedUsed
           ? <Deck deckLength={deckSize} closeIsSorting={stopIsSorting} />
+          : ''
+      }
+      {
+        canSteal
+          ? (
+            <List
+              items={roundTable.length === 4
+                ? [...roundTable].splice(1)
+                : []}
+              saveSelection={sendTarget}
+            />
+          )
           : ''
       }
     </div>

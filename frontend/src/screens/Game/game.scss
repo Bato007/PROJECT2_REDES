@@ -11,10 +11,11 @@
     width: 100%;
 
     .chat {
-        display: 'flex';
-        font-size: '24px';
+        display: flex;
+        font-size: 24px;
         width: 95vw;
         height: 5vh;
+        margin-bottom: 1vw;
 
         input {
             background: white;
@@ -29,6 +30,12 @@
             font-size: 24px;
             border-radius: 10px;
             padding: 10px 14px;
+            margin-left: 1vw;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
 
             &:disabled {
                 background: gray
