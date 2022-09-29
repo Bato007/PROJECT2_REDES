@@ -105,7 +105,7 @@ class Rooms(object):
     NON_DEFUSE_CARDS = 7
     for user in users:
       user_deck = []
-      user_deck.append(defuses.pop(0))
+      # user_deck.append(defuses.pop(0))
       for _ in range(NON_DEFUSE_CARDS):
         user_deck.append(deck.pop(0))
       play_decks[user] = user_deck[:]

@@ -7,19 +7,13 @@ class Game(object):
     self.users = []
     self.usersDeck = None
 
-    # Game state
-    self.turn = None
-
-    # Draw
-    self.lastUserDrawed = None
-    self.lastCardDrawed = { 'id': -1 }
-
     # Put
     self.lastUserPut = None
     self.lastCardPut = { 'id': -1 }
 
   def getUserLenDeck(self):
     sizeDecks = {}
+
     for deck in list(self.usersDeck.keys()):
       sizeDecks[deck] = len(self.usersDeck[deck])
     return sizeDecks
@@ -38,8 +32,8 @@ class Game(object):
     return -1
 
   def getNewTurns(self, turn):
-    i = self.users.index(turn) + 1
-    self.users = self.users[i:] + self.users[:i]
+    i = list(self.usersDeck.keys()).index(turn) + 1
+    self.users = list(self.usersDeck.keys())[i:] + list(self.usersDeck.keys())[:i]
     self.turns = itertools.cycle(self.users)
 
   def addNewUser(self, user):
@@ -193,13 +187,11 @@ class Game(object):
     if (username not in self.users): raise Exception('Not valid user')
 
     drawedCard = self.deck.pop(0)
-    self.lastCardDrawed = drawedCard
-    self.lastUserDrawed = username
 
     # It's not a bomb
     if (drawedCard['id'] != 18):
-      self.lastCardDrawed = drawedCard
       self.currentTurn = next(self.turns)
+      self.usersDeck[username].append(drawedCard)
       return {
         'card': drawedCard,
         'username': username,
@@ -218,11 +210,12 @@ class Game(object):
 
     # User lost the game
     if (index == -1):
+      self.currentTurn = next(self.turns)
+      
       # Removes this user
       del self.usersDeck[username]
-      self.users.remove(username)
+      self.users = list(self.deck_users.keys())[:]
 
-      self.currentTurn = next(self.turns)
       self.getNewTurns(self.currentTurn)  # Generates new turn
 
       response = {

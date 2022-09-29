@@ -18,7 +18,7 @@ userService = Users(database)
 def broadcast(roomID, response):
   try:
     _, connected = GAMES[roomID]
-    print('[SERVER] Sending to', _.roomID, ':', response)
+    # print('[SERVER] Sending to', _.roomID, ':', response)
     websockets.broadcast(connected, json.dumps(response))
   except Exception as e:
     print('[ERROR] BROADCAST:', e)
@@ -170,7 +170,7 @@ async def gameHandler(request):
   
   # If there is an error
   except Exception as e:
-    print('[ERROR] ON ROOM:', e)
+    print('[ERROR] ON GAME:', e)
     return {
         'code': 404,
         'message': str(e),
