@@ -26,7 +26,7 @@ class Users(object):
     theStatus = {}
 
     for user in users:
-      theStatus[user] = {
+      theStatus[user['username']] = {
         'status': user['status'],
         'isPrivate': user['isPrivate'],
       }
