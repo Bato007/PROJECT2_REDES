@@ -106,6 +106,7 @@ async def gameHandler(request):
         'username': action['username'],
         'turn': action['turn'],
         'lost': action['lost'],
+        'decksSize': action['decksSize'],
         'action': 'draw',
       }
 
