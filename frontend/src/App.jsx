@@ -16,10 +16,12 @@ const App = () => {
 
   // Create WebSocket connection.
   const [socket, setSocket] = React.useState(new WebSocket('ws://localhost:8081'))
+  const [user, setUser] = React.useState('')
+  const [room, setRoom] = React.useState('')
 
   return (
     <Router>
-      <SocketContext.Provider value={socket}>
+      <SocketContext.Provider value={{ socket: [socket, setSocket], user: [user, setUser], room: [room, setRoom] }}>
         <Routes>
           <Route path="/" element={(<Home />)} />
           <Route

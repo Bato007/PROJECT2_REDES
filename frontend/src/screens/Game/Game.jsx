@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import Card from '../../components/card/Card'
 import CardsPlaceholder from '../../components/card/CardPlaceholder'
+import { SocketContext } from '../../App'
+import { draw, defuse, shuffle, attack, skip, future, cat } from '../../Utils/objects'
 
 import Deck from '../../components/card/Deck'
 import Player from '../../components/player/Player'
@@ -14,6 +16,20 @@ const Game = () => {
   const [isSorting, setIsSorting] = useState(false)
   // eslint-disable-next-line no-unused-vars
   const [playerInTurn, setPlayerInTurn] = useState(2)
+
+  const { socket, user, room } = useContext(SocketContext)
+  const [socketVal, setSocket] = socket
+  const [userVal, setUser] = user
+  const [roomVal, setRoom] = room
+
+  socketVal.onopen = () => {
+    // socketVal.send(JSON.stringify({
+    //   type: "room",
+    //   action: "leave",
+    //   roomID: "ZSFBY",
+    //   username: "Requete"
+    // }))
+  }
 
   const [, dropRef] = useDrop({
     accept: 'CARD',
@@ -40,11 +56,17 @@ const Game = () => {
   })
 
   const addCardToPlayer = (card) => {
-    playerCards.push(card)
-    setPlayerCards([...playerCards])
-    if (card.id === 18
-      && playerCards.findIndex((checkDiffuse) => checkDiffuse.id === 19) === -1) {
-      setIsDead(true)
+    socketVal.send(draw(userVal, roomVal))
+
+    socketVal.onmessage = (event) => {
+      const cardRes = JSON.parse(event.data);
+      console.log(cardRes)
+      playerCards.push(card)
+      setPlayerCards([...playerCards])
+      if (card.id === 18
+        && playerCards.findIndex((checkDiffuse) => checkDiffuse.id === 19) === -1) {
+        setIsDead(true)
+      }
     }
   }
 
