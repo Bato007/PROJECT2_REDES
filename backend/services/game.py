@@ -1,4 +1,4 @@
-import itertools
+import itertools, random
 
 class Game(object):
   def __init__(self, roomID, deck = None, users = [], deck_user = None) -> None:
@@ -13,6 +13,10 @@ class Game(object):
     # Draw
     self.lastUserDrawed = None
     self.lastCardDrawed = None
+
+  def removeCard(self, username, cardID):
+    index = self.getCardIndex(self.usersDeck[username], cardID)
+    self.usersDeck[username].pop(index)
 
   def getCardIndex(self, deck, cardID):
     for i in range(len(deck)):
@@ -49,12 +53,28 @@ class Game(object):
       pass
     elif (card['id'] == 4):
       pass
+
+    # Shuffle Card
     elif (card['id'] == 6):
-      pass
+      random.shuffle(self.deck)
+      self.removeCard(username, card['id'])
+
+      return {
+        'turn': self.currentTurn,
+      }
+
     elif (card['id'] == 10):
       pass
+
+    # Skip card
     elif (card['id'] == 13):
-      pass
+      self.currentTurn = next(self.turns)
+      self.removeCard(username, card['id'])
+
+      return {
+        'turn': self.currentTurn,
+      }
+
     elif (card['id'] == 18):
       pass
     elif (card['id'] == 19):
@@ -67,8 +87,8 @@ class Game(object):
     elif (card['id'] == 22):
       see_futer = self.deck[:3]
 
-      index = self.getCardIndex(self.usersDeck[username], card['id'])
-      self.usersDeck[username].pop(index)
+      # Removes card from deck
+      self.removeCard(username, card['id'])
       
       return {
         'see_futer': see_futer,
