@@ -79,6 +79,7 @@ async def roomHandler(request, websocket):
         'decks': decks['player_deck'],
         'users': game.users,
         'turn': turn,
+        'pileSize': len(decks['deck']),
         'type': 'room',
       }
 
