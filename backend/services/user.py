@@ -22,7 +22,14 @@ class Users(object):
     self.userDB.delete_many({})
   
   def getAllUsers(self, roomID):
-    return list(self.userDB.find({ 'roomID': roomID }))
+    users = list(self.userDB.find({ 'roomID': roomID }))
+    theStatus = {}
+
+    for user in users:
+      theStatus[user] = {
+        'status': user['status'],
+        'isPrivate': user['isPrivate'],
+      }
 
   def updatePublicStatus(self, username, roomID, status):
     self.userDB.update_one(
