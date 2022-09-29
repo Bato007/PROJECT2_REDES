@@ -153,7 +153,7 @@ const Game = () => {
       if (playerInTurn !== userVal) {
         return
       }
-      if (item.ID === discardPile.at(discardPile.length - 1).ID) {
+      if (item.ID === discardPile.at(discardPile.length - 1)?.ID) {
         return
       }
       if ((item.id === 19 && needsDefuse)) {

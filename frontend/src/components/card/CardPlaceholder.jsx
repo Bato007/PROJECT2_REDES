@@ -32,7 +32,7 @@ const CardsPlaceholder = ({
         ? <div className="empty-pile" /> : ''
     }
     {
-      !cardsLength
+      cardsLength === undefined
         ? (
           <div className="dead-popup">
             <h1>Lost</h1>
