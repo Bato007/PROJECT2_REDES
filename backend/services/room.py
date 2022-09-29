@@ -69,6 +69,7 @@ class Rooms(object):
     if (len(room) == 0): raise Exception('Room doesn\'t exist') 
     room = room[0]
     users = room['users'][:]
+    print(users)
 
     # Get the cards on the deck
     f = open('deck.json')

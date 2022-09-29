@@ -1,11 +1,12 @@
 import itertools, random
 
 class Game(object):
-  def __init__(self, roomID, deck = None, users = [], deck_user = None) -> None:
+  def __init__(self, roomID):
+    print(roomID)
     self.roomID = roomID
-    self.deck = deck
-    self.users = users
-    self.usersDeck = deck_user
+    self.deck = None
+    self.users = []
+    self.usersDeck = None
 
     # Game state
     self.turn = None
@@ -43,6 +44,7 @@ class Game(object):
     self.users.remove(user)
 
   def setGame(self, deck, deck_users):
+    print(self.users)
     self.turns = itertools.cycle(self.users)
     self.deck = deck
     self.usersDeck = deck_users
@@ -170,8 +172,7 @@ class Game(object):
         'turn': self.currentTurn,
       }
 
-    else:
-      raise Exception('No\'t valid card') 
+    else: raise Exception('No\'t valid card') 
 
   # Gets a new card of the deck
   def drawCard(self, username):

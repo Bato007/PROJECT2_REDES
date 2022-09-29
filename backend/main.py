@@ -29,13 +29,12 @@ async def roomHandler(request, websocket):
     if (request['action'] == 'join'):
       users = roomService.joinRoom(request['roomID'], request['username'])
 
-      print(GAMES)
       # Add information of the user for the game
       if (request['roomID'] in GAMES):
         game, connected = GAMES[request['roomID']]
         game.addNewUser(request['username'])
         connected.add(websocket)
-        GAMES[request['roomID']] =  game, connected
+        GAMES[request['roomID']] = game, connected
 
       else:
         game = Game(request['roomID'])
@@ -81,6 +80,7 @@ async def roomHandler(request, websocket):
         'turn': turn,
         'type': 'room',
       }
+
     else: raise Exception('Not valid operation')
   
   # If there is an error
