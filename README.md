@@ -80,6 +80,8 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 ```
 
 ### **4. Chat**
+
+#### Client request
 ```
 {
   type: "chat",
@@ -101,6 +103,8 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 ```
 
 ### **5. Draw Card**
+
+#### Client request
 ```
 {
   type: "game",
@@ -122,7 +126,9 @@ this version doesn't support the *Nope* card. This supports multiple users and m
 }
 ```
 
-### **5. Put Card**
+### **6. Put Card**
+
+#### Client request
 ```
 {
   type: "game",
@@ -147,5 +153,16 @@ this version doesn't support the *Nope* card. This supports multiple users and m
   stealed: [Card Model]       # The stealed cards from the victim/target
   deckSize: 10                # Length of the deck
   targetCards: [Card Model]   # Attack cards
+}
+```
+
+### **ERROR MESSAGE**
+
+#### Server response
+```
+{
+  code: 404,
+  type: "error",
+  message: "Error text"
 }
 ```
