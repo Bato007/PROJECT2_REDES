@@ -108,7 +108,9 @@ async def gameHandler(request):
 
     elif (request['action'] == 'put'):
       game, _ = GAMES[request['roomID']]
-      action = game.putCard(request['username'], request['card'])
+
+      target = request['target'] if 'target' in request else None
+      action = game.putCard(request['username'], request['card'], target)
 
       response = {
         'code': 200,
@@ -121,6 +123,9 @@ async def gameHandler(request):
       # Check special action
       if ('see_futer' in action):
         response['futureCards'] = action['see_futer'] 
+      if ('stealed' in action):
+        response['stealed'] = action['stealed'] 
+        response['target'] = action['target'] 
 
       return response
 

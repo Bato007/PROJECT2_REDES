@@ -12,11 +12,18 @@ class Game(object):
 
     # Draw
     self.lastUserDrawed = None
-    self.lastCardDrawed = None
+    self.lastCardDrawed = { 'id': -1 }
+
+    # Put
+    self.lastUserPut = None
+    self.lastCardPut = { 'id': -1 }
 
   def removeCard(self, username, cardID):
+    # update put card
+    self.lastUserPut = username
+
     index = self.getCardIndex(self.usersDeck[username], cardID)
-    self.usersDeck[username].pop(index)
+    self.lastCardPut = self.usersDeck[username].pop(index)
 
   def getCardIndex(self, deck, cardID):
     for i in range(len(deck)):
@@ -42,17 +49,46 @@ class Game(object):
     self.currentTurn = next(self.turns)
     return self.currentTurn
 
-  def putCard(self, username, card):
+  def putCard(self, username, card, target):
 
     # Check the type of the card
-    if (card['id'] == 1):
-      pass
-    elif (card['id'] == 2):
-      pass
-    elif (card['id'] == 3):
-      pass
-    elif (card['id'] == 4):
-      pass
+    stealCards = [1, 2, 3, 4]
+    if (card['id'] in stealCards):
+
+      # Check if can steal
+      if (
+        (self.lastCardPut['id'] == card['id']) and (self.lastUserPut == username)
+      ):
+        # Steal to target
+        victim_deck = self.usersDeck[target]
+
+        # Check if the user has at least 2 cards
+        stealed_cards = []
+        if (len(victim_deck) >= 2):
+          index = random.sample(range(1, len(victim_deck)), 2)
+          for i in index:
+            stealed_cards.append(victim_deck.pop(i))
+        else:
+          for _ in victim_deck:
+            stealed_cards.append(victim_deck.pop())
+
+        # Add stealed cards
+        userDeck = self.usersDeck[username]
+        for card in stealed_cards:
+          userDeck.append(card)
+
+        return {
+          'turn': self.currentTurn,
+          'stealed': stealed_cards,
+          'username': username,
+          'target': target,
+        }
+
+      self.removeCard(username, card['id'])
+      return {
+        'turn': self.currentTurn,
+        'username': username,
+      }
 
     # Shuffle Card
     elif (card['id'] == 6):
@@ -63,12 +99,21 @@ class Game(object):
         'turn': self.currentTurn,
       }
 
+    # Target Attack
     elif (card['id'] == 10):
-      pass
+      card1 = self.drawCard(username)
+      card2 = self.drawCard(username)
+
+      if (card1['lost'] or card2['lost']):
+        return {
+
+        }
 
     # Skip card
     elif (card['id'] == 13):
+      print(self.currentTurn)
       self.currentTurn = next(self.turns)
+      print(self.currentTurn)
       self.removeCard(username, card['id'])
 
       return {
@@ -77,11 +122,14 @@ class Game(object):
 
     elif (card['id'] == 18):
       pass
-    elif (card['id'] == 19):
-      
-      self.removeCard(username, card['id'])
-      pass
 
+    elif (card['id'] == 19):
+      self.removeCard(username, card['id'])
+
+      return {
+        'deckSize': len(self.deck),
+        'turn': self.currentTurn,
+      }
 
     # See the future
     elif (card['id'] == 22):
