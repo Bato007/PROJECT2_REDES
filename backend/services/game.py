@@ -1,5 +1,4 @@
 import itertools, random
-from typing import Sized
 
 class Game(object):
   def __init__(self, roomID):
@@ -57,44 +56,47 @@ class Game(object):
     self.currentTurn = next(self.turns)
     return self.currentTurn
 
-  def putCard(self, username, card, target):
+  def steal(self, username, target):
+    if (len(self.usersDeck[target]) == 0):
+      return {
+        'turn': self.currentTurn,
+        'username': username,
+        'target': target,
+        'pileSize': len(self.deck),
+        'decksSize': self.getUserLenDeck(),
+      }
 
+    index = random.randint(0, len(self.usersDeck[target]))
+    stealed = self.usersDeck[target].pop(index)
+    self.usersDeck[username].append(stealed)
+
+    return {
+      'turn': self.currentTurn,
+      'username': username,
+      'card': stealed,
+      'target': target,
+      'pileSize': len(self.deck),
+      'decksSize': self.getUserLenDeck(),
+    }
+
+  def putCard(self, username, card, target):
     # Check the type of the card
     stealCards = [1, 2, 3, 4]
     if (card['id'] in stealCards):
-      print('HOLLAAA')
+
       # Check if can steal
       if (
         (self.lastCardPut['id'] in stealCards) and (self.lastUserPut == username)
       ):
-        print('HOLLAAA IN IF', target)
         # Steal to target
-        victim_deck = self.usersDeck[target]
-
-        print('HOLLAAA IN IF', len(victim_deck))
-        # Check if the user has at least 2 cards
-        stealed_cards = []
-        if (len(victim_deck) >= 2):
-          index = random.sample(range(1, len(victim_deck)), 2)
-          for i in index:
-            stealed_cards.append(victim_deck.pop(i))
-        else:
-          for _ in victim_deck:
-            stealed_cards.append(victim_deck.pop())
-
-        # Add stealed cards
-        userDeck = self.usersDeck[username]
-        for card in stealed_cards:
-          userDeck.append(card)
-
+        self.lastCardPut['id'] = -1
         self.removeCard(username, card['id'])
         return {
           'turn': self.currentTurn,
-          'stealed': stealed_cards,
           'username': username,
-          'target': target,
           'pileSize': len(self.deck),
           'decksSize': self.getUserLenDeck(),
+          'steal': True,
         }
 
       self.removeCard(username, card['id'])
@@ -119,33 +121,17 @@ class Game(object):
     # Target Attack
     elif (card['id'] == 10):
       self.removeCard(username, card['id'])
-      cards = []
 
-      for i in range(2):
-        result = self.drawCard(target)
-
-        # The target lost the game
-        if (result['lost'] == True):
-          result['target'] = target
-          return {
-            'card': card,
-            'username': username,
-            'target': target,
-            'turn': username,
-            'lost': True,
-            'pileSize': len(self.deck),
-            'decksSize': self.getUserLenDeck(),
-          }
-        
-        cards.append(result['card'])
-    
+      # Generates two moves
+      self.currentTurn = next(self.turns)
+      for _ in range(len(self.users) - 1):
+        next(self.turns)
+          
       return {
         'card': card,
         'username': username,
-        'target': target,
-        'target_cards': cards,
-        'turn': username,
-        'lost': False,
+        'target': self.currentTurn,
+        'turn': self.currentTurn,
         'pileSize': len(self.deck),
         'decksSize': self.getUserLenDeck(),
       }

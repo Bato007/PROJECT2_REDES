@@ -132,6 +132,8 @@ async def gameHandler(request):
       # Check special action
       if ('see_futer' in action):
         response['futureCards'] = action['see_futer'] 
+      if ('steal' in action):
+        response['steal'] = action['steal'] 
       if ('stealed' in action):
         response['stealed'] = action['stealed'] 
         response['target'] = action['target'] 
@@ -139,6 +141,13 @@ async def gameHandler(request):
         response['targetCards'] = action['target_cards'] 
       if ('lost' in action):
         response['lost'] = action['lost']
+
+      return response
+
+    elif (request['action'] == 'steal'):
+      target = request['target'] if 'target' in request else None
+      response = game.steal(request['username'], target)
+      response['action'] = 'steal'
 
       return response
 
