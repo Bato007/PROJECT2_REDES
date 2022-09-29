@@ -13,7 +13,6 @@ class Game(object):
 
   def getUserLenDeck(self):
     sizeDecks = {}
-
     for deck in list(self.usersDeck.keys()):
       sizeDecks[deck] = len(self.usersDeck[deck])
     return sizeDecks
@@ -23,6 +22,7 @@ class Game(object):
     self.lastUserPut = username
 
     index = self.getCardIndex(self.usersDeck[username], cardID)
+    
     self.lastCardPut = self.usersDeck[username].pop(index)
 
   def getCardIndex(self, deck, cardID):
@@ -32,8 +32,8 @@ class Game(object):
     return -1
 
   def getNewTurns(self, turn):
-    i = list(self.usersDeck.keys()).index(turn) + 1
-    self.users = list(self.usersDeck.keys())[i:] + list(self.usersDeck.keys())[:i]
+    i = self.users.index(turn) + 1
+    self.users = self.users[i:] + self.users[:i]
     self.turns = itertools.cycle(self.users)
 
   def addNewUser(self, user):
@@ -184,8 +184,6 @@ class Game(object):
 
   # Gets a new card of the deck
   def drawCard(self, username):
-    if (username not in self.users): raise Exception('Not valid user')
-
     drawedCard = self.deck.pop(0)
 
     # It's not a bomb
@@ -214,7 +212,7 @@ class Game(object):
       
       # Removes this user
       del self.usersDeck[username]
-      self.users = list(self.usersDeck.keys())[:]
+      self.users.remove(username)
 
       self.getNewTurns(self.currentTurn)  # Generates new turn
 
