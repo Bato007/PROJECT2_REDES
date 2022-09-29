@@ -71,6 +71,19 @@ const Home = () => {
   return (
     <div className="home">
       <img src={title} alt="title" />
+      {
+        joinRoomData.roomID === ''
+          ? (
+            <div className="rooms-available">
+              <h3>Available rooms</h3>
+              <p>ZSFBY</p>
+              <p>FZ3WT</p>
+              <p>TDCRD</p>
+              <p>8MZS8</p>
+              <p>Z2U58</p>
+            </div>
+          ) : ''
+      }
       <div className="nickname-container">
         {
           joinRoomData.roomID !== ''
