@@ -214,7 +214,7 @@ class Game(object):
       
       # Removes this user
       del self.usersDeck[username]
-      self.users = list(self.deck_users.keys())[:]
+      self.users = list(self.usersDeck.keys())[:]
 
       self.getNewTurns(self.currentTurn)  # Generates new turn
 
