@@ -43,7 +43,7 @@ const Player = ({
             : ''
         }
         {
-        !cardsLength
+        cardsLength === undefined
           ? (
             <div className="dead-popup">
               <h1>Oops! You lost</h1>
