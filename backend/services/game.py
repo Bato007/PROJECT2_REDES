@@ -16,7 +16,7 @@ class Game(object):
 
   def getCardIndex(self, deck, cardID):
     for i in range(len(deck)):
-      if (deck[i].id == cardID):
+      if (deck[i]['id'] == cardID):
         return i
     return -1
 
@@ -58,7 +58,7 @@ class Game(object):
     elif (card['id'] == 18):
       pass
     elif (card['id'] == 19):
-
+      
       index = self.getCardIndex(self.usersDeck[username], card['id'])
       pass
 
@@ -67,6 +67,7 @@ class Game(object):
       see_futer = self.deck[:3]
 
       index = self.getCardIndex(self.usersDeck[username], card['id'])
+      print(index)
       self.usersDeck[username].pop(index)
       
       return {
@@ -100,7 +101,7 @@ class Game(object):
     # Check for defuse
     index = -1
     for i in range(len(userDeck)):
-      if (userDeck[i].id == 19):
+      if (userDeck[i]['id'] == 19):
         index = i
         break
     
