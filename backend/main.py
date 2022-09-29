@@ -32,14 +32,12 @@ async def roomHandler(request, websocket):
       # Add information of the user for the game
       if (request['roomID'] in GAMES):
         game, connected = GAMES[request['roomID']]
-        print('1')
         game.addNewUser(request['username'])
         connected.add(websocket)
         GAMES[request['roomID']] = game, connected
 
       else:
         game = Game(request['roomID'])
-        print('2')
         game.addNewUser(request['username'])
         connected = {websocket}
         GAMES[request['roomID']] =  game, connected
@@ -107,6 +105,7 @@ async def gameHandler(request):
         'username': action['username'],
         'turn': action['turn'],
         'lost': action['lost'],
+        'action': 'draw',
       }
 
     elif (request['action'] == 'put'):
@@ -121,6 +120,8 @@ async def gameHandler(request):
         'card': request['card'],
         'username': request['username'],
         'turn': action['turn'],
+        'decksSize': action['decksSize'],
+        'action': 'put',
       }
 
       # Check special action

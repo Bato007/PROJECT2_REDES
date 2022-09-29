@@ -1,4 +1,5 @@
 import itertools, random
+from typing import Sized
 
 class Game(object):
   def __init__(self, roomID):
@@ -17,6 +18,12 @@ class Game(object):
     # Put
     self.lastUserPut = None
     self.lastCardPut = { 'id': -1 }
+
+  def getUserLenDeck(self):
+    sizeDecks = {}
+    for deck in list(self.usersDeck.keys()):
+      sizeDecks[deck] = len(self.usersDeck[deck])
+    return sizeDecks
 
   def removeCard(self, username, cardID):
     # update put card
@@ -37,19 +44,16 @@ class Game(object):
     self.turns = itertools.cycle(self.users)
 
   def addNewUser(self, user):
-    print(user)
     self.users.append(user)
   
   def removeUser(self, user):
     self.users.remove(user)
 
   def setGame(self, deck, deck_users):
-    print(self.users)
     self.turns = itertools.cycle(list(deck_users.keys()))
     self.deck = deck
     self.usersDeck = deck_users.copy()
     self.currentTurn = next(self.turns)
-    print(self.currentTurn)
     return self.currentTurn
 
   def putCard(self, username, card, target):
@@ -85,12 +89,14 @@ class Game(object):
           'stealed': stealed_cards,
           'username': username,
           'target': target,
+          'decksSize': self.getUserLenDeck(),
         }
 
       self.removeCard(username, card['id'])
       return {
         'turn': self.currentTurn,
         'username': username,
+        'decksSize': self.getUserLenDeck(),
       }
 
     # Shuffle Card
@@ -100,6 +106,7 @@ class Game(object):
 
       return {
         'turn': self.currentTurn,
+        'decksSize': self.getUserLenDeck(),
       }
 
     # Target Attack
@@ -119,6 +126,7 @@ class Game(object):
             'target': target,
             'turn': username,
             'lost': True,
+            'decksSize': self.getUserLenDeck(),
           }
         
         cards.append(result['card'])
@@ -130,6 +138,7 @@ class Game(object):
         'target_cards': cards,
         'turn': username,
         'lost': False,
+        'decksSize': self.getUserLenDeck(),
       }
 
     # Skip card
@@ -139,6 +148,7 @@ class Game(object):
 
       return {
         'turn': self.currentTurn,
+        'decksSize': self.getUserLenDeck(),
       }
 
     # Bomb card
@@ -150,6 +160,7 @@ class Game(object):
 
       return {
           'turn': self.currentTurn,
+          'decksSize': self.getUserLenDeck(),
         }
 
     # Defuse card
@@ -159,6 +170,7 @@ class Game(object):
       return {
         'deckSize': len(self.deck),
         'turn': self.currentTurn,
+        'decksSize': self.getUserLenDeck(),
       }
 
     # See the future
@@ -171,6 +183,7 @@ class Game(object):
       return {
         'see_futer': see_futer,
         'turn': self.currentTurn,
+        'decksSize': self.getUserLenDeck(),
       }
 
     else: raise Exception('No\'t valid card') 
@@ -191,6 +204,7 @@ class Game(object):
         'turn': self.currentTurn,
         'lost': False,
         'mustDefuse': False,
+        'decksSize': self.getUserLenDeck(),
       }
     
     # It's a bomb
@@ -198,9 +212,10 @@ class Game(object):
 
     # Check for defuse
     index = self.getCardIndex(userDeck, 19)
-    
+    print(index, self.currentTurn)
     # User lost the game
     if (index == -1):
+      print(index, self.currentTurn)
       # Removes this user
       del self.usersDeck[username]
       self.users.remove(username)
@@ -214,12 +229,15 @@ class Game(object):
         'turn': self.currentTurn,
         'lost': True,
         'mustDefuse': False,
+        'decksSize': self.getUserLenDeck(),
       }
 
+    print(index, self.currentTurn)
     return {
         'card': drawedCard,
         'username': username,
         'turn': self.currentTurn,
         'lost': False,
         'mustDefuse': True,
+        'decksSize': self.getUserLenDeck(),
       }
