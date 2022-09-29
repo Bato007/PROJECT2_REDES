@@ -16,10 +16,11 @@ const Home = () => {
 
   const navigation = useNavigate()
 
-  const { socket, user, room } = useContext(SocketContext)
+  const { socket, user, room, userA } = useContext(SocketContext)
   const [socketVal, setSocket] = socket
   const [userVal, setUser] = user
   const [roomVal, setRoom] = room
+  const [userAmount, setUserAmount] = userA
 
   socketVal.onmessage = (event) => {
     const message = JSON.parse(event.data);
@@ -28,6 +29,18 @@ const Home = () => {
       alert(message.message)
       navigation(0)
     } else {
+      if (message.type === 'room') {
+        if ('users' in message) {
+          setUserAmount(message.users.length)
+          if (message.users.length === 4) {
+            socketVal.send(JSON.stringify({
+              type: 'room',
+              action: 'start',
+              roomID: roomVal,
+            }))
+          }
+        }
+      }
       navigation('/game')
     }
   }

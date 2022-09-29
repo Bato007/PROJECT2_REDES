@@ -19,12 +19,12 @@ const Game = () => {
   const [chatMessage, setChatMessage] = useState('')
   const [newChat, setNewChat] = useState(false)
   const [chatBuffer, setChatBuffer] = useState([])
-  const [started, setStarted] = useState(false)
 
-  const { socket, user, room } = useContext(SocketContext)
+  const { socket, user, room, userA } = useContext(SocketContext)
   const [socketVal, setSocket] = socket
   const [userVal, setUser] = user
   const [roomVal, setRoom] = room
+  const [userAmount, setUserAmount] = userA
 
   let setChatFalse = setTimeout(() => setNewChat(false), 5000)
   clearTimeout(setChatFalse)
@@ -41,7 +41,8 @@ const Game = () => {
         setChatFalse = setTimeout(() => setNewChat(false), 5000)
       } else if (res.type === 'room') {
         if ('decks' in res) {
-          setStarted(true)
+          Object.keys(res.decks).length // Amount of players
+          setUserAmount(4)
           res.decks[userVal].forEach((card) => {
             playerCards.push(card)
           })
@@ -92,14 +93,6 @@ const Game = () => {
       //   setIsDead(true)
       // }
     }
-  }
-
-  const startGame = () => {
-    socketVal.send(JSON.stringify({
-      type: 'room',
-      action: 'start',
-      roomID: roomVal,
-    }))
   }
 
   const removeCardToPlayer = (card) => {
@@ -220,20 +213,11 @@ const Game = () => {
           height: '100%',
           background: 'rgba(255, 255, 255, 0.85)',
           position: 'absolute',
-          display: started ? 'none' : 'flex',
+          display: userAmount === 4 ? 'none' : 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}
       >
-        <button
-          style={{
-            background: 'orange',
-            fontSize: '24px',
-            borderRadius: '10px',
-            padding: '10px 14px'
-          }}
-          onClick={startGame}
-        >Start Game</button>
       </div>
     </div>
   )

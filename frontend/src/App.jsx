@@ -18,6 +18,7 @@ const App = () => {
   const [socket, setSocket] = React.useState(new WebSocket('ws://localhost:8081'))
   const [user, setUser] = React.useState('Requete')
   const [room, setRoom] = React.useState('ZSFBY')
+  const [userAmount, setUserAmount] = React.useState(0)
 
   
   // Connection opened
@@ -33,7 +34,7 @@ const App = () => {
 
   return (
     <Router>
-      <SocketContext.Provider value={{ socket: [socket, setSocket], user: [user, setUser], room: [room, setRoom] }}>
+      <SocketContext.Provider value={{ socket: [socket, setSocket], user: [user, setUser], room: [room, setRoom], userA: [userAmount, setUserAmount] }}>
         <Routes>
           <Route path="/" element={(<Home />)} />
           <Route

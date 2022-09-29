@@ -20,7 +20,7 @@ const Player = ({ cards, isInTurn, isDead }) => {
       <div className={`player-cards-container ${isInTurn ? 'isInTurn' : ''}`} ref={ref}>
         {cards.map((item) => (
           <Card
-            key={`${item.name}-${item.index}`}
+            key={`${item.ID}`}
             card={item}
           />
         ))}
