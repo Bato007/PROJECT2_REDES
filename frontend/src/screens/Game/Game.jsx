@@ -78,12 +78,14 @@ const Game = () => {
         setPlayerInTurn(res.turn)
         setPileSize(res.pileSize)
 
+        if (res.decksSize) setRoundDecks(res.decksSize)
+
         if (res.steal && res.turn === userVal) {
           setCanSteal(res.steal)
           return []
         }
 
-        if (res.action === 'steal') {
+        if (res.action === 'steal' && res.card) {
           if (userVal === res.target) {
             const removeCard = playerCards.findIndex((card) => card.ID === res.card.ID)
             playerCards.splice(removeCard, 1)
@@ -97,15 +99,22 @@ const Game = () => {
         }
 
         if (res.turn === userVal) {
-          if (res.lost) {
-            setIsDead(true)
-          } else if ('futureCards' in res) {
+          if ('futureCards' in res) {
             setFuture([...res.futureCards])
             setTimeout(() => setFuture([]), 10000)
           } else if (res.card.id === 19) {
             setDefusedUsed(true)
             setDeckSize(res.pileSize)
           }
+        }
+
+        if (res.action === 'put' && res.card.id !== 18) {
+          discardPile.push(res.card)
+          setDiscardPile([...discardPile])
+        }
+
+        if (res.username === userVal && res.lost) {
+          setIsDead(true)
         }
 
         if (res.username === userVal && res.card.id !== 18 && res.action !== 'put') {
@@ -150,8 +159,6 @@ const Game = () => {
         action: 'put',
         card: item,
       }))
-      discardPile.push(item)
-      setDiscardPile([...discardPile])
 
       const removeCard = playerCards.findIndex((card) => card.ID === item.ID)
       playerCards.splice(removeCard, 1)
@@ -241,7 +248,7 @@ const Game = () => {
                 }
                 <div className="discard-pile" ref={dropRef}>
                   {
-                  discardPile.length > 0 > 0
+                  discardPile.length > 0
                     ? (
                       <Card
                         card={discardPile.at(-1)}
@@ -268,7 +275,7 @@ const Game = () => {
       />
       <div
         style={{
-          width: 'calc(30vw + 212px)',
+          width: 'fit-content',
           position: 'absolute',
           padding: '90px',
           background: 'rgba(0, 0, 0, 0.7)',

@@ -25,6 +25,11 @@ const Player = ({ cards, isInTurn, isDead }) => {
           />
         ))}
         {
+          cards.length === 0
+            ? <div className="empty-pile" />
+            : ''
+        }
+        {
         isDead
           ? (
             <div className="dead-popup">
