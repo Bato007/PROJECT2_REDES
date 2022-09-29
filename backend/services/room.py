@@ -78,7 +78,6 @@ class Rooms(object):
     bombs = []
 
     for card in cards:
-      card['ID'] = generate()
       if (card['id'] == 19):
         array = defuses
       elif (card['id'] == 18):
@@ -87,6 +86,7 @@ class Rooms(object):
         array = deck
 
       for _ in range(card['amount']):
+          card['ID'] = generate()
           array.append(card)
 
     random.shuffle(deck)
@@ -117,6 +117,3 @@ class Rooms(object):
       'deck': deck,
       'users': users,
     }
-
-if __name__ == '__main__':
-  print(__name__)

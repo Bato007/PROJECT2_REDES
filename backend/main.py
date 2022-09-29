@@ -72,7 +72,7 @@ async def roomHandler(request, websocket):
       # Start new game
       game, connected = GAMES[request['roomID']]
       turn = game.setGame(decks['deck'], decks['player_deck'])
-      GAMES[request['roomID']] =  game, connected
+      GAMES[request['roomID']] = game, connected
 
       return {
         'code': 200,

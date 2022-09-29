@@ -28,7 +28,7 @@ class Game(object):
     self.usersDeck = deck_users
     return next(self.turns)
 
-  def putCard(self):
+  def putCard(self, username, card):
     pass
 
   # Gets a new card of the deck
