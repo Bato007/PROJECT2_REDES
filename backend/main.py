@@ -5,15 +5,15 @@ import json, asyncio
 import mongo
 from services.room import Rooms
 from services.game import Game
+from services.user import Users
 
 PORT = 8081               # The port used by the server
-BUFFER_SIZE = 1024
-
 GAMES = {}
 
 # Init services
 database = mongo.connect()
 roomService = Rooms(database)
+userService = Users(database)
 
 def broadcast(roomID, response):
   try:
@@ -28,6 +28,7 @@ async def roomHandler(request, websocket):
     # Creates a new room
     if (request['action'] == 'join'):
       users = roomService.joinRoom(request['roomID'], request['username'])
+      userService.addUser(request['username'], request['roomID'])
 
       # Add information of the user for the game
       if (request['roomID'] in GAMES):
@@ -50,6 +51,7 @@ async def roomHandler(request, websocket):
 
     elif (request['action'] == 'leave'):
       roomService.leaveRoom(request['roomID'], request['username'])
+      userService.removeUser(request['username'], request['roomID'])
 
       # Leaves room
       game, connected = GAMES[request['roomID']]
@@ -185,6 +187,66 @@ async def chatHandler(request):
         'message': str(e),
       }
 
+async def statusHandler(request):
+  try:
+    # Draws a card from the deck
+    if (request['action'] == 'private'):
+      response = userService.updatePrivateStatus(
+        request['username'],
+        request['roomID'],
+        request['status']
+      )
+
+      return {
+        'code': 200,
+        'type': 'status',
+        'action': request['action'],
+        'username': request['username'],
+        'roomID': request['roomID'],
+        'status': request['status'],
+        'users': response,
+      }
+
+    elif (request['action'] == 'public'):
+      response = userService.updatePublicStatus(
+        request['username'],
+        request['roomID'],
+        request['status']
+      )
+
+      return {
+        'code': 200,
+        'type': 'status',
+        'action': request['action'],
+        'username': request['username'],
+        'roomID': request['roomID'],
+        'status': request['status'],
+        'users': response,
+      }
+
+    elif (request['action'] == 'get'):
+      response = userService.getAllUsers(
+        request['roomID']
+      )
+
+      return {
+        'code': 200,
+        'type': 'status',
+        'action': request['action'],
+        'users': response,
+      }
+
+    else: raise Exception('Not valid operation')
+  
+  # If there is an error
+  except Exception as e:
+    print('[ERROR] ON ROOM:', e)
+    return {
+        'code': 404,
+        'message': str(e),
+        'type': 'error',
+      }
+
 async def sessionHandler(websocket):
   while True:
       # Parent told to exit
@@ -207,6 +269,13 @@ async def sessionHandler(websocket):
 
           broadcast(request['roomID'], response)
         elif (request['type'] == 'chat'):
+          response = await chatHandler(request)
+
+          if (response['type'] == 'error'): raise Exception(response['message'])
+
+          broadcast(request['roomID'], response)
+
+        elif (request['type'] == 'status'):
           response = await chatHandler(request)
 
           if (response['type'] == 'error'): raise Exception(response['message'])
@@ -240,4 +309,5 @@ if __name__ == "__main__":
   finally:
     print('[SERVER] Cleaning server')
     roomService.cleanRooms()
+    userService.removeAll()
     print('[SERVER] Server cleaned')

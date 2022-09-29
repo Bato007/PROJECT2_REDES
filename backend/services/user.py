@@ -1,20 +1,39 @@
 
-class Rooms(object):
+class Users(object):
   def __init__(self, database) -> None:
     self.collection = 'users'
-    self.roomsDB = database[self.collection]
+    self.userDB = database[self.collection]
 
   def addUser(self, username, roomID):
-    pass
+    self.userDB.insert_one({
+      'username': username,
+      'roomID': roomID,
+      'status': 1,
+      'isPrivate': 0,
+    })
   
   def removeUser(self, username, roomID):
-    pass
+    self.userDB.delete_one({
+      'username': username,
+      'roomID': roomID,
+    })
+
+  def removeAll(self):
+    self.userDB.delete_many({})
   
   def getAllUsers(self, roomID):
-    pass
+    return list(self.userDB.find({ 'roomID': roomID }))
 
-  def updatePublicStatus(self, username, status):
-    pass
+  def updatePublicStatus(self, username, roomID, status):
+    self.userDB.update_one(
+        { 'username': username, 'roomID': roomID },
+        { '$set': { 'status': status } }
+      )
+    return self.getAllUsers(roomID)
 
-  def updatePublicStatus(self, username, status):
-    pass
+  def updatePrivateStatus(self, username, roomID, status):
+    self.userDB.update_one(
+        { 'username': username, 'roomID': roomID },
+        { '$set': { 'isPrivate': status } }
+      )
+    return self.getAllUsers(roomID)

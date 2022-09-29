@@ -66,7 +66,7 @@ class Game(object):
         'decksSize': self.getUserLenDeck(),
       }
 
-    index = random.randint(0, len(self.usersDeck[target]))
+    index = random.randint(0, len(self.usersDeck[target]) - 1)
     stealed = self.usersDeck[target].pop(index)
     self.usersDeck[username].append(stealed)
 
@@ -89,8 +89,8 @@ class Game(object):
         (self.lastCardPut['id'] in stealCards) and (self.lastUserPut == username)
       ):
         # Steal to target
-        self.lastCardPut['id'] = -1
         self.removeCard(username, card['id'])
+        self.lastCardPut = { 'id': -1 }
         return {
           'turn': self.currentTurn,
           'username': username,
@@ -188,6 +188,8 @@ class Game(object):
 
   # Gets a new card of the deck
   def drawCard(self, username):
+    if (username not in self.users): raise Exception('Not valid user')
+
     drawedCard = self.deck.pop(0)
     self.lastCardDrawed = drawedCard
     self.lastUserDrawed = username
