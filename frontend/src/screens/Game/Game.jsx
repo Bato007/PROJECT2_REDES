@@ -93,7 +93,7 @@ const Game = () => {
           }
         }
 
-        if (res.card.id === 18 && res.type !== 'put') {
+        if (res.card.id === 18 && res.action !== 'put') {
           if (res.turn === userVal) {
             // eslint-disable-next-line no-alert
             alert('EXPLODING KITTEN!! USE YOUR DIFFUSE')
