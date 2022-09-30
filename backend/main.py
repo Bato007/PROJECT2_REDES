@@ -306,8 +306,8 @@ async def sessionHandler(websocket):
         }))
         continue
 
-async def main(ssl_context):
-    async with websockets.serve(sessionHandler, "", PORT, ssl=ssl_context):
+async def main():
+    async with websockets.serve(sessionHandler, "", PORT):
       await asyncio.Future()  # run forever
 
 if __name__ == "__main__":
