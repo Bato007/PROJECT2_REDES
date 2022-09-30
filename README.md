@@ -196,6 +196,85 @@ What are you waiting for? Start playing exploding kittens online now: https://xp
 }
 ```
 
+### **7. Steal Card**
+
+#### Client request
+```
+{
+  type: "game",
+  action: "steal",
+  roomID: "ID",
+  username: "test-user",
+  target: "test-user"   # Required when attack, steal or put a bomb (this is an index, the other two are the usernames)
+}
+```
+
+#### Server response
+```
+{
+  code: 200,
+  type: "game",
+  card: Card Model,
+  username: "test-user",
+  turn: "test-user",
+  target: "test-user2"        # If steal this is the victim 
+  deckSize: 10                # Length of the deck
+  targetCards: [Card Model]   # Attack cards
+}
+```
+
+### **8. Public status**
+
+#### Client request
+```
+{
+  type: "status",
+  action: "public",
+  roomID: "ID",
+  username: "test-user",
+  status: 0
+}
+```
+
+#### Server response
+```
+{
+  code: 200,
+  type: "status",
+  action: "public",
+  roomID: "ID",
+  username: "test-user",
+  status: 0
+  users: 
+}
+```
+
+### **9. Private status**
+
+#### Client request
+```
+{
+  type: "status",
+  action: "private",
+  roomID: "ID",
+  username: "test-user",
+  status: 0
+}
+```
+
+#### Server response
+```
+{
+  code: 200,
+  type: "status",
+  action: "private",
+  roomID: "ID",
+  username: "test-user",
+  status: 0
+  users: 
+}
+```
+
 ### **ERROR MESSAGE**
 
 #### Server response
