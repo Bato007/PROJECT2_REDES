@@ -179,7 +179,7 @@ const Game = () => {
   })
 
   const addCardToPlayer = () => {
-    if (playerInTurn !== userVal || !roundTableDecks[userVal]) {
+    if (playerInTurn !== userVal || roundTableDecks[userVal] === undefined) {
       return
     }
     socketVal.send(JSON.stringify(
@@ -386,7 +386,7 @@ const Game = () => {
           ? (
             <List
               items={roundTable.length === 4
-                ? [...roundTable].splice(1)
+                ? [Object.keys(roundTableDecks)].splice(1)
                 : []}
               saveSelection={sendTarget}
             />
