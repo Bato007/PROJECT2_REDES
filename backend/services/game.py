@@ -7,6 +7,8 @@ class Game(object):
     self.users = []
     self.usersDeck = None
 
+    self.lastDrawed = { 'id': -1 }
+
     # Put
     self.lastUserPut = None
     self.lastCardPut = { 'id': -1 }
@@ -159,6 +161,7 @@ class Game(object):
     # Defuse card
     elif (card['id'] == 19):
       self.removeCard(username, card['id'])
+      self.lastDrawed = None
 
       return {
         'pileSize': len(self.deck),
@@ -185,6 +188,12 @@ class Game(object):
   # Gets a new card of the deck
   def drawCard(self, username):
     drawedCard = self.deck.pop(0)
+
+    if (
+      self.lastDrawed['id'] == 18
+      and self.lastCardPut['id'] != 19
+    ):
+      raise Exception('Defuse is needed')
 
     # It's not a bomb
     if (drawedCard['id'] != 18):
@@ -232,6 +241,7 @@ class Game(object):
 
       return response
 
+    self.lastDrawed = drawedCard.copy()
     return {
         'card': drawedCard,
         'username': username,
