@@ -7,7 +7,7 @@ from services.room import Rooms
 from services.game import Game
 from services.user import Users
 
-PORT = 443               # The port used by the server
+PORT = 8081               # The port used by the server
 GAMES = {}
 
 # Init services
