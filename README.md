@@ -1,4 +1,4 @@
-# PROJECT2_REDES
+# Exploding Kittens 
 This is a small project that replicates the game [Exploding Kittens](https://www.explodingkittens.com/products/exploding-kittens-original-edition), but
 this version doesn't support the *Nope* card, *Favor* card,  *Cumulative attacks* or *Special Combos*.
 
