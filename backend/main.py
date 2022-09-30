@@ -1,5 +1,6 @@
 import websockets
 import json, asyncio
+import ssl
 
 # Import services
 import mongo
@@ -7,7 +8,7 @@ from services.room import Rooms
 from services.game import Game
 from services.user import Users
 
-PORT = 8081               # The port used by the server
+PORT = 443               # The port used by the server
 GAMES = {}
 
 # Init services
@@ -305,15 +306,16 @@ async def sessionHandler(websocket):
         }))
         continue
 
-async def main():
-    async with websockets.serve(sessionHandler, "", PORT):
+async def main(ssl_context):
+    async with websockets.serve(sessionHandler, "", PORT, ssl=ssl_context):
       await asyncio.Future()  # run forever
 
 if __name__ == "__main__":
   print('[SERVER] Started')
   print('[SERVER] Listening from port:', PORT)
+  ssl_context = ssl.create_default_context()
   try:
-    asyncio.run(main())
+    asyncio.run(main(ssl_context))
   except:
     print('[SERVER] Closing')
   finally:
