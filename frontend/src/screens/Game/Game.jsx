@@ -386,7 +386,7 @@ const Game = () => {
           ? (
             <List
               items={roundTable.length === 4
-                ? [Object.keys(roundTableDecks)].splice(1)
+                ? Object.keys(roundTableDecks).filter((item) => item !== userVal)
                 : []}
               saveSelection={sendTarget}
             />
