@@ -19,7 +19,7 @@ export const SocketContext = React.createContext(null)
 
 const App = () => {
   // Create WebSocket connection.
-  const [socket, setSocket] = useState(new WebSocket('wss://35.247.108.45:443'))
+  const [socket, setSocket] = useState(new WebSocket('ws://35.247.108.45:8081'))
   const [user, setUser] = useState()
   const [room, setRoom] = useState()
   const [userAmount, setUserAmount] = useState(0)
